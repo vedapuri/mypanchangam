@@ -168,43 +168,61 @@ function drawTimePie(elapsedMs, remainingMs) {
   const centerY = canvas.height / 2;
   const radius = 80;
 
-  // Start at 12 o’clock
-  const startAngle = -0.5 * Math.PI;
-
-  // Clear
+  // Clear canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // ---- Remaining (LEFT side) ----
+  const startAngle = -0.5 * Math.PI; // 12 o'clock
+
+  // ---- Remaining (light gray) ----
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
-  ctx.arc(
-    centerX,
-    centerY,
-    radius,
-    startAngle + elapsedFraction * 2 * Math.PI,
-    startAngle + 2 * Math.PI
-  );
-  ctx.fillStyle = "#e0e0e0"; // light gray
+  ctx.arc(centerX, centerY, radius, startAngle + elapsedFraction * 2 * Math.PI, startAngle + 2 * Math.PI);
+  ctx.fillStyle = "#e0e0e0";
   ctx.fill();
 
-  // ---- Elapsed (RIGHT side) ----
+  // ---- Elapsed (green) ----
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
-  ctx.arc(
-    centerX,
-    centerY,
-    radius,
-    startAngle,
-    startAngle + elapsedFraction * 2 * Math.PI
-  );
-  ctx.fillStyle = "#4CAF50"; // green
+  ctx.arc(centerX, centerY, radius, startAngle, startAngle + elapsedFraction * 2 * Math.PI);
+  ctx.fillStyle = "#4CAF50";
   ctx.fill();
 
-  // Optional outline
+  // ---- Outline ----
   ctx.beginPath();
   ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
   ctx.strokeStyle = "#333";
   ctx.stroke();
+
+  // ---- Arrow at demarcation ----
+  const arrowAngle = startAngle + elapsedFraction * 2 * Math.PI;
+  const arrowLength = radius * 0.8;
+  const arrowX = centerX + Math.cos(arrowAngle) * arrowLength;
+  const arrowY = centerY + Math.sin(arrowAngle) * arrowLength;
+
+  ctx.beginPath();
+  ctx.moveTo(centerX, centerY);
+  ctx.lineTo(arrowX, arrowY);
+  ctx.strokeStyle = "red";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // ---- Numbers 0, 25, 50, 75 ----
+  const labels = ["0", "25", "50", "75"];
+  ctx.fillStyle = "blue";
+  ctx.font = "12px Arial";
+  labels.forEach((label, i) => {
+    const angle = startAngle + (i * 0.25 * 2 * Math.PI);
+    const labelRadius = radius * 0.6;
+    const x = centerX + Math.cos(angle) * labelRadius;
+    const y = centerY + Math.sin(angle) * labelRadius + 4; // adjust vertically
+    ctx.fillText(label, x - 6, y); // adjust horizontally
+  });
+
+  // ---- Title below canvas ----
+  ctx.fillStyle = "#000";
+  ctx.font = "14px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText("Thithi in progress …", centerX, centerY + radius + 20);
 }
 
 loadData();
