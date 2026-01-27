@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Time-based lookup</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; }
+  .box { border: 1px solid #ccc; padding: 15px; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<h2>Yes4 !!! My PANCHAANGAM</h2>
+<div id="output" class="box">Loading…</div>
+
+<script>
+const THITHI_MAPPING = {
+        "PRA": "Prathama",
+        "DWI": "Dwitheeya",
+        "TRU": "Trutheeya",
+        "CHA": "Chathurthi",
+        "PAN": "Panchami",
+        "SHA": "Shashthi",
+        "SAP": "Sapthami",
+        "ASH": "Ashtami",
+        "NAV": "Navami",
+        "DAS": "Dashami",
+        "EKA": "Ekadashi",
+        "DWA": "Dwadashi",
+        "TRY": "Trayodashi",
+        "CHD": "Chathurdashi",
+        "POU": "Pournamaasi",
+        "AMA": "Amaavaasya"
+      };
+  async function loadData() {
+  const nowlocal = new Date();
+  nowlocal.setSeconds(0, 0); // seconds = 0, milliseconds = 0
+  
+  const nowUTC = nowlocal.getTime(); // use THIS everywhere
+    
+  document.getElementById("output").innerHTML = `
+  <b>Current date & time:</b> ${nowlocal.toLocaleString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
+  })}<br>
+`
+;
+
+  const response = await fetch("data_thithi.csv");
+  const text = await response.text();
+
+  const lines = text.trim().split("\n");
+
+  // ---- PARSE HEADER ----
+  const headers = lines[0].split(",").map(h => h.trim());
+  const idx = name => headers.indexOf(name);
+
+  // ---- DATA ROWS ----
+  const rows = lines.slice(1);
+
+  for (const row of rows) {
+    const cols = row.split(",");
+
+    // ---- FROM (UTC) ----
+    const fromUTC = Date.parse(
+      `${cols[idx("t_from_date")].slice(0,4)}-${cols[idx("t_from_date")].slice(4,6)}-${cols[idx("t_from_date")].slice(6,8)}T` +
+      `${cols[idx("t_from_hh")].padStart(2,"0")}:${cols[idx("t_from_mm")].padStart(2,"0")}:00Z`
+    );
+
+    // ---- TO (UTC) ----
+    const toUTC = Date.parse(
+      `${cols[idx("t_to_date")].slice(0,4)}-${cols[idx("t_to_date")].slice(4,6)}-${cols[idx("t_to_date")].slice(6,8)}T` +
+      `${cols[idx("t_to_hh")].padStart(2,"0")}:${cols[idx("t_to_mm")].padStart(2,"0")}:00Z`
+    );
+
+    // ---- MATCH CHECK ----
+    if (nowUTC >= fromUTC && nowUTC < toUTC) {
+      const fromLocal = new Date(fromUTC);
+      const toLocal   = new Date(toUTC);
+      const thithiCode = cols[idx("t_Thithi_1")];
+      const thithiDesc = THITHI_MAPPING[thithiCode] ?? thithiCode;
+      // ---- TIME CALCULATIONS ----
+      const elapsedMs = nowUTC - fromUTC;
+      const remainingMs = toUTC - nowUTC;
+      
+      // ---- TIME CALCULATIONS ----
+      const elapsedDays = Math.floor(elapsedMs / (1000 * 60 * 60 * 24));
+      const elapsedHours = Math.floor((elapsedMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const elapsedMinutes = Math.floor((elapsedMs % (1000 * 60 * 60)) / (1000 * 60));
+
+      const remainingDays = Math.floor(remainingMs / (1000 * 60 * 60 * 24));
+      const remainingHours = Math.floor((remainingMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const remainingMinutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
+
+      // ---- DISPLAY ----
+      const elapsedStr = `${elapsedDays > 0 ? elapsedDays + " d " : ""}${elapsedHours} h ${elapsedMinutes} min`;
+      const remainingStr = `${remainingDays > 0 ? remainingDays + " d " : ""}${remainingHours} h ${remainingMinutes} min`;
+
+document.getElementById("output").innerHTML += `
+<br><b>Thithi details:</b><br><br>
+Name: ${thithiDesc}<br>
+<!-- Thithi: ${cols[idx("t_Thithi_1")]}<br> -->
+Starts at: ${fromLocal.toLocaleString(undefined, {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+  hour: "numeric",
+  minute: "2-digit",
+  hour12: true
+})}<br>
+Ends at: ${toLocal.toLocaleString(undefined, {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+  hour: "numeric",
+  minute: "2-digit",
+  hour12: true
+})}<br>
+Elapsed time: ${elapsedStr}<br>
+Remaining time: ${remainingStr}<br><br><br>
+
+
+<canvas id="timePie" width="200" height="200" style="margin-top:10px;"></canvas>
+
+<!-- Debug info below -->
+<!-- fromUTC: ${fromUTC} -->
+<!-- toUTC: ${toUTC} -->
+<!-- nowUTC: ${nowUTC} -->
+<!-- Thithi_0: ${cols[idx("t_Thithi_0")]}<br> -->
+<!-- Varsham: ${cols[idx("t_Varsham")]}<br> -->
+<!-- Ruthu: ${cols[idx("t_Ruthu")]}<br> -->
+<!-- Chandramanam_masam: ${cols[idx("t_Chandramanam_masam")]}<br> -->
+<!-- Paksham: ${cols[idx("t_Paksham")]}<br> -->
+
+<!-- from_date: ${cols[idx("t_from_date")]}<br> -->
+<!-- from_hh: ${cols[idx("t_from_hh")]}<br> -->
+<!-- from_mm: ${cols[idx("t_from_mm")]}<br> -->
+<!-- to_date: ${cols[idx("t_to_date")]}<br> -->
+<!-- to_hh: ${cols[idx("t_to_hh")]}<br> -->
+<!-- to_mm: ${cols[idx("t_to_mm")]}<br> -->
+<!-- Duration_in_mins: ${cols[idx("t_Duration_in_mins")]} -->
+`;
+
+drawTimePie(elapsedMs, remainingMs);
+
+      return; // stop after first match
+    }
+  }
+
+
+  // runs only if no row matched
+  document.getElementById("output").innerHTML =
+    "No matching record for current time.";
+}
+
+function drawTimePie(elapsedMs, remainingMs) {
+  const canvas = document.getElementById("timePie");
+  const ctx = canvas.getContext("2d");
+
+  const total = elapsedMs + remainingMs;
+  const elapsedFraction = elapsedMs / total;
+
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+  const radius = 80;
+
+  // Start at 12 o’clock
+  const startAngle = -0.5 * Math.PI;
+
+  // Clear
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // ---- Remaining (LEFT side) ----
+  ctx.beginPath();
+  ctx.moveTo(centerX, centerY);
+  ctx.arc(
+    centerX,
+    centerY,
+    radius,
+    startAngle + elapsedFraction * 2 * Math.PI,
+    startAngle + 2 * Math.PI
+  );
+  ctx.fillStyle = "#e0e0e0"; // light gray
+  ctx.fill();
+
+  // ---- Elapsed (RIGHT side) ----
+  ctx.beginPath();
+  ctx.moveTo(centerX, centerY);
+  ctx.arc(
+    centerX,
+    centerY,
+    radius,
+    startAngle,
+    startAngle + elapsedFraction * 2 * Math.PI
+  );
+  ctx.fillStyle = "#4CAF50"; // green
+  ctx.fill();
+
+  // Optional outline
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+  ctx.strokeStyle = "#333";
+  ctx.stroke();
+}
+
+loadData();
+</script>
+
+
+</body>
+</html>
