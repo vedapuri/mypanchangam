@@ -209,10 +209,10 @@ function drawTimePie(elapsedMs, remainingMs) {
   // ---- Numbers 0, 25, 50, 75 ----
   const labels = ["0", "25", "50", "75"];
   ctx.fillStyle = "blue";
-  ctx.font = "12px Arial";
+  ctx.font = "8px Arial";
   labels.forEach((label, i) => {
     const angle = startAngle + (i * 0.25 * 2 * Math.PI);
-    const labelRadius = radius * 0.6;
+    const labelRadius = radius * 0.8;
     const x = centerX + Math.cos(angle) * labelRadius;
     const y = centerY + Math.sin(angle) * labelRadius + 4; // adjust vertically
     ctx.fillText(label, x - 6, y); // adjust horizontally
