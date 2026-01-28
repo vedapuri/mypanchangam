@@ -256,7 +256,7 @@ function drawTimePie(elapsedMs, remainingMs) {
   const legendY = centerY + radius + 40;
   const boxSize = 10;
   ctx.textAlign = "left";
-  ctx.font = "10px Arial";
+  ctx.font = "14px Arial";
 
   // Green box - Complete
   ctx.fillStyle = "#4CAF50";
@@ -264,7 +264,7 @@ function drawTimePie(elapsedMs, remainingMs) {
 
   ctx.fillStyle = "#000";
   ctx.fillText(
-    `% Complete: ${percentComplete} %`,
+    `Percent Complete: ${percentComplete}%`,
     centerX - 65,
     legendY + 9
   );
@@ -275,7 +275,7 @@ function drawTimePie(elapsedMs, remainingMs) {
 
   ctx.fillStyle = "#000";
   ctx.fillText(
-    `% Remaining: ${percentRemaining} %`,
+    `Percent Remaining: ${percentRemaining}%`,
     centerX + 25,
     legendY + 9
   );
