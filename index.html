@@ -255,30 +255,33 @@ function drawTimePie(elapsedMs, remainingMs) {
   // ---- LEGEND ----
   const legendY = centerY + radius + 50;
   const boxSize = 10;
+  const lineGap = 18;
+  
   ctx.textAlign = "left";
   ctx.font = "14px Arial";
-
+  
   // Green box - Complete
   ctx.fillStyle = "#4CAF50";
   ctx.fillRect(centerX - 80, legendY, boxSize, boxSize);
-
+  
   ctx.fillStyle = "#000";
   ctx.fillText(
     `Percent Complete: ${percentComplete}%`,
-    centerX - 65,
+    centerX - 60,
     legendY + 9
   );
-
-  // Grey box - Remaining
+  
+  // Grey box - Remaining (next line)
   ctx.fillStyle = "#e0e0e0";
-  ctx.fillRect(centerX + 10, legendY, boxSize, boxSize);
-
+  ctx.fillRect(centerX - 80, legendY + lineGap, boxSize, boxSize);
+  
   ctx.fillStyle = "#000";
   ctx.fillText(
     `Percent Remaining: ${percentRemaining}%`,
-    centerX + 25,
-    legendY + 9
+    centerX - 60,
+    legendY + lineGap + 9
   );
+;
 }
 
 
