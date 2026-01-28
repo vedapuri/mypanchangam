@@ -223,7 +223,39 @@ function drawTimePie(elapsedMs, remainingMs) {
   ctx.font = "14px Arial";
   ctx.textAlign = "center";
   ctx.fillText("Thithi in progress …", centerX, centerY + radius + 20);
+// ---- PERCENTAGES (must exist) ----
+  const percentComplete = (elapsedFraction * 100).toFixed(2);
+  const percentRemaining = (100 - percentComplete).toFixed(2);
+
+  // ---- LEGEND ----
+  const legendY = centerY + radius + 40;
+  const boxSize = 10;
+  ctx.textAlign = "left";
+  ctx.font = "10px Arial";
+
+  // Green box - Complete
+  ctx.fillStyle = "#4CAF50";
+  ctx.fillRect(centerX - 80, legendY, boxSize, boxSize);
+
+  ctx.fillStyle = "#000";
+  ctx.fillText(
+    `% Complete: ${percentComplete} %`,
+    centerX - 65,
+    legendY + 9
+  );
+
+  // Grey box - Remaining
+  ctx.fillStyle = "#e0e0e0";
+  ctx.fillRect(centerX + 10, legendY, boxSize, boxSize);
+
+  ctx.fillStyle = "#000";
+  ctx.fillText(
+    `% Remaining: ${percentRemaining} %`,
+    centerX + 25,
+    legendY + 9
+  );
 }
+
 
 loadData();
 </script>
