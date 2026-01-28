@@ -193,18 +193,43 @@ function drawTimePie(elapsedMs, remainingMs) {
   ctx.strokeStyle = "#333";
   ctx.stroke();
 
-  // ---- Arrow at demarcation ----
-  const arrowAngle = startAngle + elapsedFraction * 2 * Math.PI;
-  const arrowLength = radius * 0.8;
-  const arrowX = centerX + Math.cos(arrowAngle) * arrowLength;
-  const arrowY = centerY + Math.sin(arrowAngle) * arrowLength;
-
+  // ---- Red boundary line (stops before circle) ----
+  const boundaryAngle = startAngle + elapsedFraction * 2 * Math.PI;
+  
+  const lineEndRadius = radius * 0.85;   // red line stops here
+  const arrowRadius   = radius * 0.98;   // arrow near circumference
+  
+  const lineX = centerX + Math.cos(boundaryAngle) * lineEndRadius;
+  const lineY = centerY + Math.sin(boundaryAngle) * lineEndRadius;
+  
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
-  ctx.lineTo(arrowX, arrowY);
+  ctx.lineTo(lineX, lineY);
   ctx.strokeStyle = "red";
   ctx.lineWidth = 2;
   ctx.stroke();
+  
+  // ---- Arrowhead at the edge ----
+  const tipX = centerX + Math.cos(boundaryAngle) * arrowRadius;
+  const tipY = centerY + Math.sin(boundaryAngle) * arrowRadius;
+  
+  const arrowSize = 6;
+  const leftAngle  = boundaryAngle + Math.PI / 8;
+  const rightAngle = boundaryAngle - Math.PI / 8;
+  
+  ctx.beginPath();
+  ctx.moveTo(tipX, tipY);
+  ctx.lineTo(
+    tipX - Math.cos(leftAngle) * arrowSize,
+    tipY - Math.sin(leftAngle) * arrowSize
+  );
+  ctx.lineTo(
+    tipX - Math.cos(rightAngle) * arrowSize,
+    tipY - Math.sin(rightAngle) * arrowSize
+  );
+  ctx.closePath();
+  ctx.fillStyle = "red";
+  ctx.fill();
 
   // ---- Numbers 0, 25, 50, 75 ----
   const labels = ["0", "25", "50", "75"];
