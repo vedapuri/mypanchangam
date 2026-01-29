@@ -108,7 +108,7 @@ Elapsed time: ${elapsedStr}<br>
 Remaining time: ${remainingStr}<br>
 
 
-<canvas id="timePie" width="300" height="300" style="margin-top:10px;"></canvas>
+<canvas id="timePie" width="350" height="350" style="margin-top:10px;"></canvas>
 
 <!-- Debug info below -->
 <!-- fromUTC: ${fromUTC} -->
