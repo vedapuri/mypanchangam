@@ -10,7 +10,7 @@
 </head>
 <body>
 
-<h2>Got it  !!! My PANCHAANGAM</h2>
+<h2>Got it new !!! My PANCHAANGAM</h2>
 <div id="output" class="box">Loading…</div>
 
 <script>
@@ -251,37 +251,38 @@ function drawTimePie(elapsedMs, remainingMs) {
 // ---- PERCENTAGES (must exist) ----
   const percentComplete = (elapsedFraction * 100).toFixed(2);
   const percentRemaining = (100 - percentComplete).toFixed(2);
-
-  // ---- LEGEND ----
+  // ---- LEGEND (same line) ----
   const legendY = centerY + radius + 50;
   const boxSize = 10;
-  const lineGap = 18;
+  const gap = 6;
   
-  ctx.textAlign = "left";
   ctx.font = "14px Arial";
+  ctx.textAlign = "left";
   
   // Green box - Complete
   ctx.fillStyle = "#4CAF50";
-  ctx.fillRect(centerX - 80, legendY, boxSize, boxSize);
+  ctx.fillRect(centerX - 90, legendY, boxSize, boxSize);
   
   ctx.fillStyle = "#000";
   ctx.fillText(
-    `Percent Complete: ${percentComplete}%`,
-    centerX - 60,
+    `Complete: ${percentComplete}%`,
+    centerX - 90 + boxSize + gap,
     legendY + 9
   );
   
-  // Grey box - Remaining (next line)
+  // Grey box - Remaining (same line)
+  const secondX = centerX + 10;
+  
   ctx.fillStyle = "#e0e0e0";
-  ctx.fillRect(centerX - 80, legendY + lineGap, boxSize, boxSize);
+  ctx.fillRect(secondX, legendY, boxSize, boxSize);
   
   ctx.fillStyle = "#000";
   ctx.fillText(
-    `Percent Remaining: ${percentRemaining}%`,
-    centerX - 60,
-    legendY + lineGap + 9
+    `Remaining: ${percentRemaining}%`,
+    secondX + boxSize + gap,
+    legendY + 9
   );
-;
+
 }
 
 
