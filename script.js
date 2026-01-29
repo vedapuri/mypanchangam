@@ -148,9 +148,10 @@ function drawTimePie(elapsedMs, remainingMs) {
   const total = elapsedMs + remainingMs;
   const elapsedFraction = elapsedMs / total;
 
-  const centerX = canvas.width / 2;
-  const centerY = canvas.height / 2;
-  const radius = 80;
+  // ---- Adjusted center to move pie up-left ----
+  const centerX = 120; // was canvas.width / 2
+  const centerY = 120; // was canvas.height / 2
+  const radius = 70;   // slightly smaller to fit
 
   // Clear canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -218,52 +219,42 @@ function drawTimePie(elapsedMs, remainingMs) {
     ctx.fillText(label, x - 6, y);
   });
 
-  // ---- Title below canvas ----
+  // ---- Title below pie ----
   ctx.fillStyle = "#000";
   ctx.font = "14px Arial";
   ctx.textAlign = "center";
-  ctx.fillText("Thithi in progress …", centerX, centerY + radius + 20);
+  const titleOffset = 10; // distance from pie
+  ctx.fillText("Thithi in progress …", centerX, centerY + radius + titleOffset);
 
-  // ---- Percentages ----
+  // ---- Percentages and legend ----
   const percentComplete = (elapsedFraction * 100).toFixed(2);
   const percentRemaining = (100 - percentComplete).toFixed(2);
 
-        // ---- LEGEND ----
   ctx.font = "14px Arial";
   ctx.textAlign = "left";
-        
+
   const boxSize = 10;
   const gap = 6;
   const margin = 10;
-  const legendY = centerY + radius + 50;
-        
+  const legendTop = centerY + radius + titleOffset + 25;
+
+  let currentX = margin;
+  const legendY = legendTop;
+
   const legends = [
-          { color: "#4CAF50", text: `Complete: ${percentComplete}%` },
-          { color: "#e0e0e0", text: `Remaining: ${percentRemaining}%` }
-        ];
-        
-        let currentX = margin;
-        let currentY = centerY + radius + 50;
+    { color: "#4CAF50", text: `Complete: ${percentComplete}%` },
+    { color: "#e0e0e0", text: `Remaining: ${percentRemaining}%` }
+  ];
 
-        legends.forEach(item => {
-          const textWidth = ctx.measureText(item.text).width;
+  legends.forEach(item => {
+    ctx.fillStyle = item.color;
+    ctx.fillRect(currentX, legendY, boxSize, boxSize);
 
-          // wrap to next line if it exceeds canvas width
-          if (currentX + boxSize + gap + textWidth > canvas.width - margin) {
-            currentX = margin;
-            currentY += boxSize + 10; // move down
-          }
+    ctx.fillStyle = "#000";
+    ctx.fillText(item.text, currentX + boxSize + gap, legendY + 9);
 
-          // draw box
-          ctx.fillStyle = item.color;
-          ctx.fillRect(currentX, currentY, boxSize, boxSize);
-
-          // draw text
-          ctx.fillStyle = "#000";
-          ctx.fillText(item.text, currentX + boxSize + gap, currentY + 9);
-
-          currentX += boxSize + gap + textWidth + 20;
-
+    const textWidth = ctx.measureText(item.text).width;
+    currentX += boxSize + gap + textWidth + 20;
   });
 }
 
