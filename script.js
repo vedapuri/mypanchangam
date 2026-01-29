@@ -140,7 +140,7 @@ drawTimePie(elapsedMs, remainingMs);
   document.getElementById("output").innerHTML =
     "No matching record for current time.";
 }
-
+// new function start
 function drawTimePie(elapsedMs, remainingMs) {
   const canvas = document.getElementById("timePie");
   const ctx = canvas.getContext("2d");
@@ -177,40 +177,31 @@ function drawTimePie(elapsedMs, remainingMs) {
   ctx.strokeStyle = "#333";
   ctx.stroke();
 
-  // ---- Red boundary line (stops before circle) ----
+  // ---- Red boundary line ----
   const boundaryAngle = startAngle + elapsedFraction * 2 * Math.PI;
-  
-  const lineEndRadius = radius * 0.85;   // red line stops here
-  const arrowRadius   = radius * 0.98;   // arrow near circumference
-  
+  const lineEndRadius = radius * 0.85;
+  const arrowRadius = radius * 0.98;
+
   const lineX = centerX + Math.cos(boundaryAngle) * lineEndRadius;
   const lineY = centerY + Math.sin(boundaryAngle) * lineEndRadius;
-  
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
   ctx.lineTo(lineX, lineY);
   ctx.strokeStyle = "red";
   ctx.lineWidth = 2;
   ctx.stroke();
-  
-  // ---- Arrowhead at the edge ----
+
+  // ---- Arrowhead ----
   const tipX = centerX + Math.cos(boundaryAngle) * arrowRadius;
   const tipY = centerY + Math.sin(boundaryAngle) * arrowRadius;
-  
   const arrowSize = 6;
-  const leftAngle  = boundaryAngle + Math.PI / 8;
+  const leftAngle = boundaryAngle + Math.PI / 8;
   const rightAngle = boundaryAngle - Math.PI / 8;
-  
+
   ctx.beginPath();
   ctx.moveTo(tipX, tipY);
-  ctx.lineTo(
-    tipX - Math.cos(leftAngle) * arrowSize,
-    tipY - Math.sin(leftAngle) * arrowSize
-  );
-  ctx.lineTo(
-    tipX - Math.cos(rightAngle) * arrowSize,
-    tipY - Math.sin(rightAngle) * arrowSize
-  );
+  ctx.lineTo(tipX - Math.cos(leftAngle) * arrowSize, tipY - Math.sin(leftAngle) * arrowSize);
+  ctx.lineTo(tipX - Math.cos(rightAngle) * arrowSize, tipY - Math.sin(rightAngle) * arrowSize);
   ctx.closePath();
   ctx.fillStyle = "red";
   ctx.fill();
@@ -223,8 +214,8 @@ function drawTimePie(elapsedMs, remainingMs) {
     const angle = startAngle + (i * 0.25 * 2 * Math.PI);
     const labelRadius = radius * 0.8;
     const x = centerX + Math.cos(angle) * labelRadius;
-    const y = centerY + Math.sin(angle) * labelRadius + 4; // adjust vertically
-    ctx.fillText(label, x - 6, y); // adjust horizontally
+    const y = centerY + Math.sin(angle) * labelRadius + 4;
+    ctx.fillText(label, x - 6, y);
   });
 
   // ---- Title below canvas ----
@@ -232,48 +223,53 @@ function drawTimePie(elapsedMs, remainingMs) {
   ctx.font = "14px Arial";
   ctx.textAlign = "center";
   ctx.fillText("Thithi in progress …", centerX, centerY + radius + 20);
-// ---- PERCENTAGES (must exist) ----
+
+  // ---- Percentages ----
   const percentComplete = (elapsedFraction * 100).toFixed(2);
   const percentRemaining = (100 - percentComplete).toFixed(2);
-  // ---- LEGEND (same line, auto-spaced) ----
-  const legendY = centerY + radius + 50;
-  const boxSize = 10;
-  const gap = 6;
-  
+
+  // ---- LEGEND ----
   ctx.font = "14px Arial";
   ctx.textAlign = "left";
-  
-  // ---- First legend: Complete ----
-  const firstX = centerX - 90;
-  
-  ctx.fillStyle = "#4CAF50";
-  ctx.fillRect(firstX, legendY, boxSize, boxSize);
-  
-  ctx.fillStyle = "#000";
-  const completeText = `Complete: ${percentComplete}%`;
-  ctx.fillText(
-    completeText,
-    firstX + boxSize + gap,
-    legendY + 9
-  );
-  
-  // Measure width of first legend text
-  const textWidth = ctx.measureText(completeText).width;
-  
-  // ---- Second legend: Remaining (placed after first) ----
-  const secondX = firstX + boxSize + gap + textWidth + 20;
-  
-  ctx.fillStyle = "#e0e0e0";
-  ctx.fillRect(secondX, legendY, boxSize, boxSize);
-  
-  ctx.fillStyle = "#000";
-  ctx.fillText(
-    `Remaining: ${percentRemaining}%`,
-    secondX + boxSize + gap,
-    legendY + 9
-  );
 
+  const legendTop = centerY + radius + 50;
+  const boxSize = 10;
+  const gap = 6;
+  const margin = 10;
+
+  let currentX = margin;
+  let currentY = legendTop;
+
+  const legends = [
+    { color: "#4CAF50", text: `Complete: ${percentComplete}%` },
+    { color: "#e0e0e0", text: `Remaining: ${percentRemaining}%` }
+  ];
+
+  legends.forEach(item => {
+    // measure text width
+    const textWidth = ctx.measureText(item.text).width;
+
+    // wrap to next line if it exceeds canvas
+    if (currentX + boxSize + gap + textWidth > canvas.width - margin) {
+      currentX = margin;
+      currentY += boxSize + 10; // next line
+    }
+
+    // draw box
+    ctx.fillStyle = item.color;
+    ctx.fillRect(currentX, currentY, boxSize, boxSize);
+
+    // draw text
+    ctx.fillStyle = "#000";
+    ctx.fillText(item.text, currentX + boxSize + gap, currentY + 9);
+
+    // update X for next legend
+    currentX += boxSize + gap + textWidth + 20; 
+  });
 }
+
+
+// new function end
 
 
 loadData();
