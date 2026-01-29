@@ -108,7 +108,7 @@ Elapsed time: ${elapsedStr}<br>
 Remaining time: ${remainingStr}<br>
 
 
-<canvas id="timePie" width="350" height="350" style="margin-top:10px;"></canvas>
+<canvas id="timePie" width="450" height="400" style="margin-top:10px;"></canvas>
 
 <!-- Debug info below -->
 <!-- fromUTC: ${fromUTC} -->
@@ -228,43 +228,34 @@ function drawTimePie(elapsedMs, remainingMs) {
   const percentComplete = (elapsedFraction * 100).toFixed(2);
   const percentRemaining = (100 - percentComplete).toFixed(2);
 
-  // ---- LEGEND ----
+        // ---- LEGEND ----
   ctx.font = "14px Arial";
   ctx.textAlign = "left";
-
-  const legendTop = centerY + radius + 50;
+        
   const boxSize = 10;
   const gap = 6;
   const margin = 10;
-
-  let currentX = margin;
-  let currentY = legendTop;
-
+  const legendY = centerY + radius + 50;
+        
   const legends = [
-    { color: "#4CAF50", text: `Complete: ${percentComplete}%` },
-    { color: "#e0e0e0", text: `Remaining: ${percentRemaining}%` }
-  ];
-
-  legends.forEach(item => {
-    // measure text width
-    const textWidth = ctx.measureText(item.text).width;
-
-    // wrap to next line if it exceeds canvas
-    if (currentX + boxSize + gap + textWidth > canvas.width - margin) {
-      currentX = margin;
-      currentY += boxSize + 10; // next line
-    }
-
-    // draw box
-    ctx.fillStyle = item.color;
-    ctx.fillRect(currentX, currentY, boxSize, boxSize);
-
-    // draw text
-    ctx.fillStyle = "#000";
-    ctx.fillText(item.text, currentX + boxSize + gap, currentY + 9);
-
-    // update X for next legend
-    currentX += boxSize + gap + textWidth + 20; 
+          { color: "#4CAF50", text: `Complete: ${percentComplete}%` },
+          { color: "#e0e0e0", text: `Remaining: ${percentRemaining}%` }
+        ];
+        
+        let currentX = margin;
+        
+        legends.forEach(item => {
+          // draw box
+          ctx.fillStyle = item.color;
+          ctx.fillRect(currentX, legendY, boxSize, boxSize);
+        
+          // draw text
+          ctx.fillStyle = "#000";
+          ctx.fillText(item.text, currentX + boxSize + gap, legendY + 9);
+        
+          // update X for next legend
+          const textWidth = ctx.measureText(item.text).width;
+          currentX += boxSize + gap + textWidth + 20; // shift right
   });
 }
 
