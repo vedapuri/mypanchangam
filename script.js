@@ -243,19 +243,27 @@ function drawTimePie(elapsedMs, remainingMs) {
         ];
         
         let currentX = margin;
-        
+        let currentY = centerY + radius + 50;
+
         legends.forEach(item => {
+          const textWidth = ctx.measureText(item.text).width;
+
+          // wrap to next line if it exceeds canvas width
+          if (currentX + boxSize + gap + textWidth > canvas.width - margin) {
+            currentX = margin;
+            currentY += boxSize + 10; // move down
+          }
+
           // draw box
           ctx.fillStyle = item.color;
-          ctx.fillRect(currentX, legendY, boxSize, boxSize);
-        
+          ctx.fillRect(currentX, currentY, boxSize, boxSize);
+
           // draw text
           ctx.fillStyle = "#000";
-          ctx.fillText(item.text, currentX + boxSize + gap, legendY + 9);
-        
-          // update X for next legend
-          const textWidth = ctx.measureText(item.text).width;
-          currentX += boxSize + gap + textWidth + 20; // shift right
+          ctx.fillText(item.text, currentX + boxSize + gap, currentY + 9);
+
+          currentX += boxSize + gap + textWidth + 20;
+
   });
 }
 
