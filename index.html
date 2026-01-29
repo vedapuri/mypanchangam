@@ -10,7 +10,7 @@
 </head>
 <body>
 
-<h2>Got it new2 !!! My PANCHAANGAM</h2>
+<h2>Legend shifted !!! My PANCHAANGAM</h2>
 <div id="output" class="box">Loading…</div>
 
 <script>
@@ -251,7 +251,7 @@ function drawTimePie(elapsedMs, remainingMs) {
 // ---- PERCENTAGES (must exist) ----
   const percentComplete = (elapsedFraction * 100).toFixed(2);
   const percentRemaining = (100 - percentComplete).toFixed(2);
-  // ---- LEGEND (same line) ----
+  // ---- LEGEND (same line, auto-spaced) ----
   const legendY = centerY + radius + 50;
   const boxSize = 10;
   const gap = 6;
@@ -259,19 +259,25 @@ function drawTimePie(elapsedMs, remainingMs) {
   ctx.font = "14px Arial";
   ctx.textAlign = "left";
   
-  // Green box - Complete
+  // ---- First legend: Complete ----
+  const firstX = centerX - 90;
+  
   ctx.fillStyle = "#4CAF50";
-  ctx.fillRect(centerX - 90, legendY, boxSize, boxSize);
+  ctx.fillRect(firstX, legendY, boxSize, boxSize);
   
   ctx.fillStyle = "#000";
+  const completeText = `Complete: ${percentComplete}%`;
   ctx.fillText(
-    `Complete: ${percentComplete}%`,
-    centerX - 90 + boxSize + gap,
+    completeText,
+    firstX + boxSize + gap,
     legendY + 9
   );
   
-  // Grey box - Remaining (same line)
-  const secondX = centerX + 10;
+  // Measure width of first legend text
+  const textWidth = ctx.measureText(completeText).width;
+  
+  // ---- Second legend: Remaining (placed after first) ----
+  const secondX = firstX + boxSize + gap + textWidth + 20;
   
   ctx.fillStyle = "#e0e0e0";
   ctx.fillRect(secondX, legendY, boxSize, boxSize);
