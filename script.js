@@ -223,8 +223,8 @@ function drawTimePie(elapsedMs, remainingMs) {
   ctx.fillStyle = "#000";
   ctx.font = "14px Arial";
   ctx.textAlign = "center";
-  const titleOffset = 10; // distance from pie
-  ctx.fillText("Thithi in progress …", centerX, centerY + radius + titleOffset);
+  const titleOffset = 20; // distance from pie
+  ctx.fillText("Thithi in progress .....", centerX, centerY + radius + titleOffset);
 
   // ---- Percentages and legend ----
   const percentComplete = (elapsedFraction * 100).toFixed(2);
