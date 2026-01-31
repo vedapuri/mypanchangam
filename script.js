@@ -1,265 +1,188 @@
 const THITHI_MAPPING = {
-        "PRA": "Prathama",
-        "DWI": "Dwitheeya",
-        "TRU": "Trutheeya",
-        "CHA": "Chathurthi",
-        "PAN": "Panchami",
-        "SHA": "Shashthi",
-        "SAP": "Sapthami",
-        "ASH": "Ashtami",
-        "NAV": "Navami",
-        "DAS": "Dashami",
-        "EKA": "Ekadashi",
-        "DWA": "Dwadashi",
-        "TRY": "Trayodashi",
-        "CHD": "Chathurdashi",
-        "POU": "Pournamaasi",
-        "AMA": "Amaavaasya"
-      };
-  async function loadData() {
+  PRA: "Prathama",
+  DWI: "Dwitheeya",
+  TRU: "Trutheeya",
+  CHA: "Chathurthi",
+  PAN: "Panchami",
+  SHA: "Shashthi",
+  SAP: "Sapthami",
+  ASH: "Ashtami",
+  NAV: "Navami",
+  DAS: "Dashami",
+  EKA: "Ekadashi",
+  DWA: "Dwadashi",
+  TRY: "Trayodashi",
+  CHD: "Chathurdashi",
+  POU: "Pournamaasi",
+  AMA: "Amaavaasya"
+};
+
+async function loadData() {
   const nowlocal = new Date();
-  nowlocal.setSeconds(0, 0); // seconds = 0, milliseconds = 0
-  
-  const nowUTC = nowlocal.getTime(); // use THIS everywhere
-    
+  nowlocal.setSeconds(0, 0);
+  const nowUTC = nowlocal.getTime();
+
   document.getElementById("output").innerHTML = `
-  <b>Current date & time:</b> ${nowlocal.toLocaleString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true
-  })}<br>
-`
-;
+    <b>Current date & time:</b>
+    ${nowlocal.toLocaleString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true
+    })}<br>
+  `;
+
   const response = await fetch("data_thithi.csv?v=" + Date.now());
-
   const text = await response.text();
-
   const lines = text.trim().split("\n");
 
-  // ---- PARSE HEADER ----
   const headers = lines[0].split(",").map(h => h.trim());
   const idx = name => headers.indexOf(name);
-
-  // ---- DATA ROWS ----
   const rows = lines.slice(1);
 
   for (const row of rows) {
     const cols = row.split(",");
 
-    // ---- FROM (UTC) ----
     const fromUTC = Date.parse(
       `${cols[idx("t_from_date")].slice(0,4)}-${cols[idx("t_from_date")].slice(4,6)}-${cols[idx("t_from_date")].slice(6,8)}T` +
       `${cols[idx("t_from_hh")].padStart(2,"0")}:${cols[idx("t_from_mm")].padStart(2,"0")}:00Z`
     );
 
-    // ---- TO (UTC) ----
     const toUTC = Date.parse(
       `${cols[idx("t_to_date")].slice(0,4)}-${cols[idx("t_to_date")].slice(4,6)}-${cols[idx("t_to_date")].slice(6,8)}T` +
       `${cols[idx("t_to_hh")].padStart(2,"0")}:${cols[idx("t_to_mm")].padStart(2,"0")}:00Z`
     );
 
-    // ---- MATCH CHECK ----
     if (nowUTC >= fromUTC && nowUTC < toUTC) {
       const fromLocal = new Date(fromUTC);
-      const toLocal   = new Date(toUTC);
+      const toLocal = new Date(toUTC);
+
       const thithiCode = cols[idx("t_Thithi_1")];
       const thithiDesc = THITHI_MAPPING[thithiCode] ?? thithiCode;
-      // ---- TIME CALCULATIONS ----
+
       const elapsedMs = nowUTC - fromUTC;
       const remainingMs = toUTC - nowUTC;
-      
-      // ---- TIME CALCULATIONS ----
-      const elapsedDays = Math.floor(elapsedMs / (1000 * 60 * 60 * 24));
-      const elapsedHours = Math.floor((elapsedMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const elapsedMinutes = Math.floor((elapsedMs % (1000 * 60 * 60)) / (1000 * 60));
 
-      const remainingDays = Math.floor(remainingMs / (1000 * 60 * 60 * 24));
-      const remainingHours = Math.floor((remainingMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const remainingMinutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
+      const elapsedStr = formatDuration(elapsedMs);
+      const remainingStr = formatDuration(remainingMs);
 
-      // ---- DISPLAY ----
-      const elapsedStr = `${elapsedDays > 0 ? elapsedDays + " d " : ""}${elapsedHours} h ${elapsedMinutes} min`;
-      const remainingStr = `${remainingDays > 0 ? remainingDays + " d " : ""}${remainingHours} h ${remainingMinutes} min`;
+      // ✅ REPLACED INLINE HTML WITH THIS FUNCTION CALL
+      renderThithiBlock({
+        title: "Thithi details",
+        thithiDesc,
+        fromLocal,
+        toLocal,
+        elapsedStr,
+        remainingStr,
+        elapsedMs,
+        remainingMs,
+        canvasId: "timePie1"
+      });
 
-document.getElementById("output").innerHTML += `
-<br><b>Thithi details:</b><br><br>
-Name: ${thithiDesc}<br>
-<!-- Thithi: ${cols[idx("t_Thithi_1")]}<br> -->
-Starts at: ${fromLocal.toLocaleString(undefined, {
-  year: "numeric",
-  month: "short",
-  day: "numeric",
-  hour: "numeric",
-  minute: "2-digit",
-  hour12: true
-})}<br>
-Ends at: ${toLocal.toLocaleString(undefined, {
-  year: "numeric",
-  month: "short",
-  day: "numeric",
-  hour: "numeric",
-  minute: "2-digit",
-  hour12: true
-})}<br>
-Elapsed time: ${elapsedStr}<br>
-Remaining time: ${remainingStr}<br>
-
-
-<canvas id="timePie" width="450" height="400" style="margin-top:10px;"></canvas>
-
-<!-- Debug info below -->
-<!-- fromUTC: ${fromUTC} -->
-<!-- toUTC: ${toUTC} -->
-<!-- nowUTC: ${nowUTC} -->
-<!-- Thithi_0: ${cols[idx("t_Thithi_0")]}<br> -->
-<!-- Varsham: ${cols[idx("t_Varsham")]}<br> -->
-<!-- Ruthu: ${cols[idx("t_Ruthu")]}<br> -->
-<!-- Chandramanam_masam: ${cols[idx("t_Chandramanam_masam")]}<br> -->
-<!-- Paksham: ${cols[idx("t_Paksham")]}<br> -->
-
-<!-- from_date: ${cols[idx("t_from_date")]}<br> -->
-<!-- from_hh: ${cols[idx("t_from_hh")]}<br> -->
-<!-- from_mm: ${cols[idx("t_from_mm")]}<br> -->
-<!-- to_date: ${cols[idx("t_to_date")]}<br> -->
-<!-- to_hh: ${cols[idx("t_to_hh")]}<br> -->
-<!-- to_mm: ${cols[idx("t_to_mm")]}<br> -->
-<!-- Duration_in_mins: ${cols[idx("t_Duration_in_mins")]} -->
-`;
-
-drawTimePie(elapsedMs, remainingMs);
-
-      return; // stop after first match
+      return;
     }
   }
 
-
-  // runs only if no row matched
-  document.getElementById("output").innerHTML =
-    "No matching record for current time.";
+  document.getElementById("output").innerHTML +=
+    "<br>No matching record for current time.";
 }
-// new function start
-function drawTimePie(elapsedMs, remainingMs) {
-  const canvas = document.getElementById("timePie");
+
+/* ================================
+   NEW / CLEAN DRAW FUNCTION
+================================ */
+function drawTimePie(canvasId, elapsedMs, remainingMs) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
   const ctx = canvas.getContext("2d");
 
   const total = elapsedMs + remainingMs;
-  const elapsedFraction = elapsedMs / total;
+  const fraction = elapsedMs / total;
 
-  // ---- Adjusted center to move pie up-left ----
-  const centerX = 120; // was canvas.width / 2
-  const centerY = 120; // was canvas.height / 2
-  const radius = 70;   // slightly smaller to fit
+  const centerX = 120;
+  const centerY = 120;
+  const radius = 70;
+  const startAngle = -0.5 * Math.PI;
 
-  // Clear canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const startAngle = -0.5 * Math.PI; // 12 o'clock
-
-  // ---- Remaining (light gray) ----
+  // Remaining
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
-  ctx.arc(centerX, centerY, radius, startAngle + elapsedFraction * 2 * Math.PI, startAngle + 2 * Math.PI);
+  ctx.arc(
+    centerX,
+    centerY,
+    radius,
+    startAngle + fraction * 2 * Math.PI,
+    startAngle + 2 * Math.PI
+  );
   ctx.fillStyle = "#e0e0e0";
   ctx.fill();
 
-  // ---- Elapsed (green) ----
+  // Elapsed
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
-  ctx.arc(centerX, centerY, radius, startAngle, startAngle + elapsedFraction * 2 * Math.PI);
+  ctx.arc(
+    centerX,
+    centerY,
+    radius,
+    startAngle,
+    startAngle + fraction * 2 * Math.PI
+  );
   ctx.fillStyle = "#4CAF50";
   ctx.fill();
 
-  // ---- Outline ----
   ctx.beginPath();
   ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
   ctx.strokeStyle = "#333";
   ctx.stroke();
 
-  // ---- Red boundary line ----
-  const boundaryAngle = startAngle + elapsedFraction * 2 * Math.PI;
-  const lineEndRadius = radius * 0.85;
-  const arrowRadius = radius * 0.98;
-
-  const lineX = centerX + Math.cos(boundaryAngle) * lineEndRadius;
-  const lineY = centerY + Math.sin(boundaryAngle) * lineEndRadius;
-  ctx.beginPath();
-  ctx.moveTo(centerX, centerY);
-  ctx.lineTo(lineX, lineY);
-  ctx.strokeStyle = "red";
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  // ---- Arrowhead ----
-  const tipX = centerX + Math.cos(boundaryAngle) * arrowRadius;
-  const tipY = centerY + Math.sin(boundaryAngle) * arrowRadius;
-  const arrowSize = 6;
-  const leftAngle = boundaryAngle + Math.PI / 8;
-  const rightAngle = boundaryAngle - Math.PI / 8;
-
-  ctx.beginPath();
-  ctx.moveTo(tipX, tipY);
-  ctx.lineTo(tipX - Math.cos(leftAngle) * arrowSize, tipY - Math.sin(leftAngle) * arrowSize);
-  ctx.lineTo(tipX - Math.cos(rightAngle) * arrowSize, tipY - Math.sin(rightAngle) * arrowSize);
-  ctx.closePath();
-  ctx.fillStyle = "red";
-  ctx.fill();
-
-  // ---- Numbers 0, 25, 50, 75 ----
-  const labels = ["0", "25", "50", "75"];
-  ctx.fillStyle = "blue";
-  ctx.font = "8px Arial";
-  labels.forEach((label, i) => {
-    const angle = startAngle + (i * 0.25 * 2 * Math.PI);
-    const labelRadius = radius * 0.8;
-    const x = centerX + Math.cos(angle) * labelRadius;
-    const y = centerY + Math.sin(angle) * labelRadius + 4;
-    ctx.fillText(label, x - 6, y);
-  });
-
-  // ---- Title below pie ----
-  ctx.fillStyle = "#000";
   ctx.font = "14px Arial";
   ctx.textAlign = "center";
-  const titleOffset = 20; // distance from pie
-  ctx.fillText("Thithi in progress .....", centerX, centerY + radius + titleOffset);
-
-  // ---- Percentages and legend ----
-  const percentComplete = (elapsedFraction * 100).toFixed(2);
-  const percentRemaining = (100 - percentComplete).toFixed(2);
-
-  ctx.font = "14px Arial";
-  ctx.textAlign = "left";
-
-  const boxSize = 10;
-  const gap = 6;
-  const margin = 10;
-  const legendTop = centerY + radius + titleOffset + 25;
-
-  let currentX = margin;
-  const legendY = legendTop;
-
-  const legends = [
-    { color: "#4CAF50", text: `Complete: ${percentComplete}%` },
-    { color: "#e0e0e0", text: `Remaining: ${percentRemaining}%` }
-  ];
-
-  legends.forEach(item => {
-    ctx.fillStyle = item.color;
-    ctx.fillRect(currentX, legendY, boxSize, boxSize);
-
-    ctx.fillStyle = "#000";
-    ctx.fillText(item.text, currentX + boxSize + gap, legendY + 9);
-
-    const textWidth = ctx.measureText(item.text).width;
-    currentX += boxSize + gap + textWidth + 20;
-  });
+  ctx.fillStyle = "#000";
+  ctx.fillText(
+    "Thithi in progress .....",
+    centerX,
+    centerY + radius + 20
+  );
 }
 
+/* ================================
+   REUSABLE RENDER BLOCK
+================================ */
+function renderThithiBlock({
+  title,
+  thithiDesc,
+  fromLocal,
+  toLocal,
+  elapsedStr,
+  remainingStr,
+  elapsedMs,
+  remainingMs,
+  canvasId
+}) {
+  document.getElementById("output").innerHTML += `
+    <br><b>${title}</b><br><br>
+    Name: ${thithiDesc}<br>
+    Starts at: ${fromLocal.toLocaleString()}<br>
+    Ends at: ${toLocal.toLocaleString()}<br>
+    Elapsed time: ${elapsedStr}<br>
+    Remaining time: ${remainingStr}<br>
+    <canvas id="${canvasId}" width="450" height="400" style="margin-top:10px;"></canvas>
+  `;
 
-// new function end
+  drawTimePie(canvasId, elapsedMs, remainingMs);
+}
 
+/* ================================
+   SMALL HELPER
+================================ */
+function formatDuration(ms) {
+  const d = Math.floor(ms / 86400000);
+  const h = Math.floor((ms % 86400000) / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  return `${d > 0 ? d + " d " : ""}${h} h ${m} min`;
+}
 
 loadData();
