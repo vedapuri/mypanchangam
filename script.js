@@ -88,10 +88,7 @@ async function loadData() {
   document.getElementById("output").innerHTML +=
     "<br>No matching record for current time.";
 }
-
-/* ================================
-   NEW / CLEAN DRAW FUNCTION
-================================ */
+//
 function drawTimePie(canvasId, elapsedMs, remainingMs) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
@@ -107,7 +104,7 @@ function drawTimePie(canvasId, elapsedMs, remainingMs) {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Remaining
+  // ---- Remaining (gray) ----
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
   ctx.arc(
@@ -120,7 +117,7 @@ function drawTimePie(canvasId, elapsedMs, remainingMs) {
   ctx.fillStyle = "#e0e0e0";
   ctx.fill();
 
-  // Elapsed
+  // ---- Elapsed (green) ----
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
   ctx.arc(
@@ -133,20 +130,92 @@ function drawTimePie(canvasId, elapsedMs, remainingMs) {
   ctx.fillStyle = "#4CAF50";
   ctx.fill();
 
+  // ---- Outline ----
   ctx.beginPath();
   ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
   ctx.strokeStyle = "#333";
   ctx.stroke();
 
+  // ---- Red boundary line ----
+  const boundaryAngle = startAngle + fraction * 2 * Math.PI;
+  const lineEnd = radius * 0.85;
+
+  ctx.beginPath();
+  ctx.moveTo(centerX, centerY);
+  ctx.lineTo(
+    centerX + Math.cos(boundaryAngle) * lineEnd,
+    centerY + Math.sin(boundaryAngle) * lineEnd
+  );
+  ctx.strokeStyle = "red";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // ---- Arrowhead ----
+  const arrowRadius = radius * 0.98;
+  const tipX = centerX + Math.cos(boundaryAngle) * arrowRadius;
+  const tipY = centerY + Math.sin(boundaryAngle) * arrowRadius;
+  const arrowSize = 6;
+
+  ctx.beginPath();
+  ctx.moveTo(tipX, tipY);
+  ctx.lineTo(
+    tipX - Math.cos(boundaryAngle - Math.PI / 8) * arrowSize,
+    tipY - Math.sin(boundaryAngle - Math.PI / 8) * arrowSize
+  );
+  ctx.lineTo(
+    tipX - Math.cos(boundaryAngle + Math.PI / 8) * arrowSize,
+    tipY - Math.sin(boundaryAngle + Math.PI / 8) * arrowSize
+  );
+  ctx.closePath();
+  ctx.fillStyle = "red";
+  ctx.fill();
+
+  // ---- 0 / 25 / 50 / 75 labels ----
+  ctx.fillStyle = "blue";
+  ctx.font = "8px Arial";
+  ["0", "25", "50", "75"].forEach((label, i) => {
+    const a = startAngle + i * 0.25 * 2 * Math.PI;
+    ctx.fillText(
+      label,
+      centerX + Math.cos(a) * radius * 0.8 - 6,
+      centerY + Math.sin(a) * radius * 0.8 + 4
+    );
+  });
+
+  // ---- Title ----
   ctx.font = "14px Arial";
-  ctx.textAlign = "center";
   ctx.fillStyle = "#000";
+  ctx.textAlign = "center";
   ctx.fillText(
     "Thithi in progress .....",
     centerX,
     centerY + radius + 20
   );
+
+  // ---- Legend ----
+  const percentComplete = (fraction * 100).toFixed(2);
+  const percentRemaining = (100 - percentComplete).toFixed(2);
+
+  ctx.textAlign = "left";
+  ctx.font = "14px Arial";
+
+  let x = 10;
+  const y = centerY + radius + 40;
+
+  ctx.fillStyle = "#4CAF50";
+  ctx.fillRect(x, y, 10, 10);
+  ctx.fillStyle = "#000";
+  ctx.fillText(`Complete: ${percentComplete}%`, x + 16, y + 9);
+
+  x += ctx.measureText(`Complete: ${percentComplete}%`).width + 40;
+
+  ctx.fillStyle = "#e0e0e0";
+  ctx.fillRect(x, y, 10, 10);
+  ctx.fillStyle = "#000";
+  ctx.fillText(`Remaining: ${percentRemaining}%`, x + 16, y + 9);
 }
+
+//
 
 /* ================================
    REUSABLE RENDER BLOCK
