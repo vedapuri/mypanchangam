@@ -108,7 +108,7 @@ BHA: {name: "Apabharani", previous: "Ashwini", next: "Krutthika"}    },
   karanam: {
     title: "Karanam details",
     csv: "data_karanam.csv",
-    codeColumn: "okaranam_karanam",
+    codeColumn: "okaranam_number",
     fromPrefix: "okaranam_from",
     toPrefix: "okaranam_to",
     mapping: {
