@@ -335,6 +335,15 @@ Saturday: {name: "Sthira"}
 /***********************
  * MAIN ENTRY POINT
  ***********************/
+
+async function loadAll(nowUTC) {
+  await loadElementData(ELEMENT_DEFINITIONS.thithi, nowUTC);
+  await loadElementData(ELEMENT_DEFINITIONS.nakshatram, nowUTC);
+  await loadElementData(ELEMENT_DEFINITIONS.yogam, nowUTC);
+  await loadElementData(ELEMENT_DEFINITIONS.karanam, nowUTC);
+}
+
+
 async function loadElementData(def_element,nowUTC) {
 
   const response = await fetch(def_element.csv + "?v=" + Date.now());
@@ -563,10 +572,7 @@ function drawTimePie(canvasId, elapsedMs, remainingMs, titleText) {
 /***********************
  * CALL IT
  ***********************/
-loadElementData(ELEMENT_DEFINITIONS.thithi,nowUTC);
-loadElementData(ELEMENT_DEFINITIONS.nakshatram,nowUTC);
-loadElementData(ELEMENT_DEFINITIONS.yogam,nowUTC);
-loadElementData(ELEMENT_DEFINITIONS.karanam,nowUTC);
+loadAll(nowUTC);
 
 
 
