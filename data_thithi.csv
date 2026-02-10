@@ -1,4 +1,4 @@
-ohithi_key,othithi_varsham,othithi_masam,othithi_paksham,othithi_thithi,othithi_ruthu,othithi_from_date,othithi_to_date,othithi_date_advancement_by,othithi_from_hour,othithi_from_mins,othithi_to_hour,othithi_to_mins,othithi_duration_in_mins,othithi_first_derivative
+ohithi_key,othithi_varsham,othithi_masam,othithi_paksham,othithi_thithi,othithi_ruthu,othithi_start_date,othithi_end_date,othithi_date_advancement_by,othithi_start_hour,othithi_start_mins,othithi_end_hour,othithi_end_mins,othithi_duration_in_mins,othithi_first_derivative
 PRA,VWV,PAU,SHU,PRA,HEM,20251220,20251221,0,1,43,3,41,1558,0
 DWI,VWV,PAU,SHU,DWI,HEM,20251221,20251222,0,3,41,5,22,1541,0
 TRU,VWV,PAU,SHU,TRU,HEM,20251222,20251223,0,5,22,6,43,1521,0
@@ -79,4 +79,5 @@ DWI,VWV,PHA,KRI,DWI,SHI,20260304,20260305,0,11,19,11,34,1455,0
 TRU,VWV,PHA,KRI,TRU,SHI,20260305,20260306,0,11,34,12,23,1489,0
 CHA,VWV,PHA,KRI,CHA,SHI,20260306,20260307,0,12,23,13,47,1524,0
 PAN,VWV,PHA,KRI,PAN,SHI,20260307,20260308,0,13,47,15,41,1554,0
+
 SHA,VWV,PHA,KRI,SHA,SHI,20260308,20260309,0,15,41,17,57,1576,0
