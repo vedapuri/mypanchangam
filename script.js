@@ -172,7 +172,7 @@ BHA: {name: "Apabharani", previous: "Ashwini", next: "Krutthika"}    },
  "58": {name: "Shakuni",previous: "Vishtihi/Bhadra", next: "Chathushpaath"},
  "59": {name: "Chathushpaath",previous: "Shakuni", next: "Naaga"},
  "60": {name: "Naaga",previous: "Chathushpaath", next: "Kimstughna"}
-}
+},
     canvasId: "timePie4",
     pieLabel: "Karanam in progress ....."
   }
