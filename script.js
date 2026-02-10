@@ -427,17 +427,20 @@ function renderElementBlock({
   canvasId,
   pieLabel
 }) {
-  document.getElementById("output").innerHTML += `
-    <br><b>${title}</b><br><br>
-    Name: ${name}<br>
-    Starts at: ${fromLocal.toLocaleString()}<br>
-    Ends at: ${toLocal.toLocaleString()}<br>
-    Elapsed time: ${elapsedStr}<br>
-    Remaining time: ${remainingStr}<br>
-    <canvas id="${canvasId}" width="450" height="400" style="margin-top:10px;"></canvas>
-  `;
+const container = document.createElement("div");
+container.innerHTML = `
+  <br><b>${title}</b><br><br>
+  Name: ${name}<br>
+  Starts at: ${fromLocal.toLocaleString()}<br>
+  Ends at: ${toLocal.toLocaleString()}<br>
+  Elapsed time: ${elapsedStr}<br>
+  Remaining time: ${remainingStr}<br>
+  <canvas id="${canvasId}" width="450" height="400" style="margin-top:10px;"></canvas>
+`;
 
-  drawTimePie(canvasId, elapsedMs, remainingMs, pieLabel);
+document.getElementById("output").appendChild(container);
+
+drawTimePie(canvasId, elapsedMs, remainingMs, pieLabel);
 }
 
 
