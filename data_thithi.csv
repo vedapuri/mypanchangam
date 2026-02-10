@@ -1,4 +1,4 @@
-t_Thithi_0,t_Varsham,t_Chandramanam_masam,t_Paksham,t_Thithi_1,t_Ruthu,t_from_date,t_to_date,t_Date_advancement_by,t_from_hh,t_from_mm,t_to_hh,t_to_mm,t_Duration_in_mins,t_First_derivative
+ohithi_key,othithi_varsham,othithi_masam,othithi_paksham,othithi_thithi,othithi_ruthu,othithi_from_date,othithi_to_date,othithi_date_advancement_by,othithi_from_hour,othithi_from_mins,othithi_to_hour,othithi_to_mins,othithi_duration_in_mins,othithi_first_derivative
 PRA,VWV,PAU,SHU,PRA,HEM,20251220,20251221,0,1,43,3,41,1558,0
 DWI,VWV,PAU,SHU,DWI,HEM,20251221,20251222,0,3,41,5,22,1541,0
 TRU,VWV,PAU,SHU,TRU,HEM,20251222,20251223,0,5,22,6,43,1521,0
