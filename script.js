@@ -6,8 +6,8 @@ const ELEMENT_DEFINITIONS = {
     title: "Thithi details",
     csv: "data_thithi.csv",
     codeColumn: "othithi_thithi",
-    fromPrefix: "othithi_from",
-    toPrefix: "othithi_to",
+    fromPrefix: "othithi_start",
+    toPrefix: "othithi_end",
     mapping: {
   PRA: { name: "Prathama", previous: null,        next: "Dwitheeya" },
   DWI: { name: "Dwitheeya", previous: "Prathama", next: "Trutheeya" },
