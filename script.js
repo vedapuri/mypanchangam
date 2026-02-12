@@ -324,13 +324,19 @@ Saturday: {name: "Sthira"}
 };
 
 
-  const nowLocal = new Date();
-  nowLocal.setSeconds(0, 0);
-  const nowUTC = nowLocal.getTime();
+// ---- GLOBAL TIME SETUP (runs once) ----
+const nowLocal = new Date();
+nowLocal.setSeconds(0, 0);        // normalize seconds
+const nowUTC = nowLocal.getTime();
 
-  document.getElementById("output").innerHTML = `
-    <b>Current date & time:</b> ${nowLocal.toLocaleString()}<br>
-  `;
+// Display current time
+document.getElementById("nowTime").innerHTML =
+  `<b>Current date & time:</b> ${nowLocal.toLocaleString()}`;
+
+// Debug version stamp
+document.getElementById("version").textContent =
+  "JS loaded: " + new Date().toLocaleString();
+
 
 /***********************
  * MAIN ENTRY POINT
