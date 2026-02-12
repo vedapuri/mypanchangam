@@ -4,6 +4,7 @@
 const ELEMENT_DEFINITIONS = {
   thithi: {
     title: "Thithi details",
+    containerId: "thithiBlock",
     csv: "data_thithi.csv",
     codeColumn: "othithi_thithi",
     fromPrefix: "othithi_start",
@@ -32,6 +33,7 @@ const ELEMENT_DEFINITIONS = {
   },
   nakshatram: {
     title: "Nakshatram details",
+    containerId: "nakshatramBlock", 
     csv: "data_nakshatram.csv",
     codeColumn: "onakshatram_nakshatram",
     fromPrefix: "onakshatram_start",
@@ -69,6 +71,7 @@ BHA: {name: "Apabharani", previous: "Ashwini", next: "Krutthika"}    },
   },
   yogam: {
     title: "Yogam details",
+    containerId: "yogamBlock",
     csv: "data_yogam.csv",
     codeColumn: "oyogam_yogam",
     fromPrefix: "oyogam_start",
@@ -107,6 +110,7 @@ BHA: {name: "Apabharani", previous: "Ashwini", next: "Krutthika"}    },
   },
   karanam: {
     title: "Karanam details",
+    containerId: "karanamBlock", 
     csv: "data_karanam.csv",
     codeColumn: "okaranam_number",
     fromPrefix: "okaranam_start",
@@ -385,7 +389,8 @@ async function loadElementData(def_element,nowUTC) {
         elapsedMs,
         remainingMs,
         canvasId: def_element.canvasId,
-        pieLabel: def_element.pieLabel
+        pieLabel: def_element.pieLabel, 
+        containerId: def_element.containerId 
       });
 
       return;
@@ -431,23 +436,25 @@ function renderElementBlock({
   elapsedMs,
   remainingMs,
   canvasId,
-  pieLabel
+  pieLabel,
+  containerId  // 
 }) {
-const container = document.createElement("div");
-container.innerHTML = `
-  <br><b>${title}</b><br><br>
-  Name: ${name}<br>
-  Starts at: ${fromLocal.toLocaleString()}<br>
-  Ends at: ${toLocal.toLocaleString()}<br>
-  Elapsed time: ${elapsedStr}<br>
-  Remaining time: ${remainingStr}<br>
-  <canvas id="${canvasId}" width="450" height="400" style="margin-top:10px;"></canvas>
-`;
+  const container = document.getElementById(containerId);
+  if (!container) return;
 
-document.getElementById("output").appendChild(container);
+  container.innerHTML = `
+    <b>${title}</b><br><br>
+    Name: ${name}<br>
+    Starts at: ${fromLocal.toLocaleString()}<br>
+    Ends at: ${toLocal.toLocaleString()}<br>
+    Elapsed time: ${elapsedStr}<br>
+    Remaining time: ${remainingStr}<br>
+    <canvas id="${canvasId}" width="450" height="400" style="margin-top:10px;"></canvas>
+  `;
 
-drawTimePie(canvasId, elapsedMs, remainingMs, pieLabel);
+  drawTimePie(canvasId, elapsedMs, remainingMs, pieLabel);
 }
+
 
 
 /***********************
