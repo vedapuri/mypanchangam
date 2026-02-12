@@ -397,8 +397,11 @@ async function loadElementData(def_element,nowUTC) {
     }
   }
 
-  document.getElementById("output").innerHTML +=
-    "<br>No matching record for current time.";
+  // --- No matching record ---
+  const container = document.getElementById(def_element.containerId);
+  if (container) {
+    container.innerHTML = `<b>${def_element.title}</b><br><br>No matching record for current time.`;
+  }
 }
 
 
