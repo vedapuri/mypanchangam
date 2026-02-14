@@ -1,8 +1,33 @@
 /***********************
+ * COLOUR DEFINITIONS
+ ***********************/
+const ELEMENT_COLORS = {
+  thithi: {
+    elapsed: "#FFB6C1",
+    remaining: "#E0E0E0"
+  },
+  nakshatram: {
+    elapsed: "#ADD8E6",
+    remaining: "#E0E0E0"
+  },
+  yogam: {
+    elapsed: "#90EE90",
+    remaining: "#E0E0E0"
+  },
+  karanam: {
+    elapsed: "#FFDAB9",
+    remaining: "#E0E0E0"
+  }
+};
+
+const COLOR_CSV = "data_all_colours.csv";
+
+/***********************
  * ELEMENT DEFINITIONS
  ***********************/
 const ELEMENT_DEFINITIONS = {
   thithi: {
+    key: "thithi",
     title: "Thithi details",
     containerId: "thithiBlock",
     csv: "data_thithi.csv",
@@ -32,6 +57,7 @@ const ELEMENT_DEFINITIONS = {
     pieLabel: "Thithi in progress ....."
   },
   nakshatram: {
+    key: "nakshatram",
     title: "Nakshatram details",
     containerId: "nakshatramBlock", 
     csv: "data_nakshatram.csv",
@@ -70,6 +96,7 @@ BHA: {name: "Apabharani", previous: "Ashwini", next: "Krutthika"}    },
     pieLabel: "Nakshatram in progress ....."
   },
   yogam: {
+    key: "yogam",
     title: "Yogam details",
     containerId: "yogamBlock",
     csv: "data_yogam.csv",
@@ -109,6 +136,7 @@ BHA: {name: "Apabharani", previous: "Ashwini", next: "Krutthika"}    },
     pieLabel: "Yogam in progress ....."
   },
   karanam: {
+    key: "karanam",
     title: "Karanam details",
     containerId: "karanamBlock", 
     csv: "data_karanam.csv",
@@ -346,7 +374,29 @@ document.getElementById("version").textContent =
  * MAIN ENTRY POINT
  ***********************/
 
+async function loadElementColors() {
+  const response = await fetch(COLOR_CSV + "?v=" + Date.now());
+  const text = await response.text();
+  const lines = text.trim().split("\n");
+
+  const headers = lines[0].split(",").map(h => h.trim());
+  const idx = name => headers.indexOf(name);
+
+  for (const line of lines.slice(1)) {
+    const cols = line.split(",");
+
+    const key = cols[idx("element")].trim();
+
+    ELEMENT_COLORS[key] = {
+        elapsed: cols[idx("elapsedColor")]?.trim() || ELEMENT_COLORS[key]?.elapsed,
+        remaining: cols[idx("remainingColor")]?.trim() || ELEMENT_COLORS[key]?.remaining
+    };
+  }
+}
+
+
 async function loadAll(nowUTC) {
+  await loadElementColors();
   await loadElementData(ELEMENT_DEFINITIONS.thithi, nowUTC);
   await loadElementData(ELEMENT_DEFINITIONS.nakshatram, nowUTC);
   await loadElementData(ELEMENT_DEFINITIONS.yogam, nowUTC);
@@ -378,7 +428,9 @@ async function loadElementData(def_element,nowUTC) {
 
       const elapsedMs = nowUTC - fromUTC;
       const remainingMs = toUTC - nowUTC;
-
+      const pieColors = ELEMENT_COLORS[def_element.key] || {
+        elapsed: "#FFB6C1",
+        remaining: "#e0e0e0"};
       renderElementBlock({
         title: def_element.title,
         name,
@@ -390,7 +442,9 @@ async function loadElementData(def_element,nowUTC) {
         remainingMs,
         canvasId: def_element.canvasId,
         pieLabel: def_element.pieLabel, 
-        containerId: def_element.containerId 
+        containerId: def_element.containerId,
+        elapsedColor: pieColors.elapsed,       
+        remainingColor: pieColors.remaining    
       });
 
       return;
@@ -425,6 +479,7 @@ function formatDuration(ms) {
   return `${hours}h ${minutes}m`;
 }
 
+const isHex = v => /^#([0-9A-F]{3}){1,2}$/i.test(v);
 
 /***********************
  * RENDER BLOCK
@@ -440,7 +495,9 @@ function renderElementBlock({
   remainingMs,
   canvasId,
   pieLabel,
-  containerId  // 
+  containerId, 
+  elapsedColor,
+  remainingColor 
 }) {
   const container = document.getElementById(containerId);
   if (!container) return;
@@ -455,7 +512,8 @@ function renderElementBlock({
     <canvas id="${canvasId}" width="450" height="400" style="margin-top:10px;"></canvas>
   `;
 
-  drawTimePie(canvasId, elapsedMs, remainingMs, pieLabel);
+  drawTimePie(canvasId, elapsedMs, remainingMs, pieLabel, elapsedColor,
+  remainingColor);
 }
 
 
@@ -464,18 +522,27 @@ function renderElementBlock({
  * PIE CHART
  ***********************/
 
-function drawTimePie(canvasId, elapsedMs, remainingMs, titleText) {
+function drawTimePie(
+  canvasId, 
+  elapsedMs, 
+  remainingMs, 
+  titleText, 
+  elapsedColor,
+  remainingColor)
+ {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
 
   const total = elapsedMs + remainingMs;
+  if (total <= 0) return;
+
   const fraction = elapsedMs / total;
 
   // --- Geometry ---
-  const centerX = 160;
-  const centerY = 140;
-  const radius  = 80;
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2 - 20;
+  const radius  = Math.min(canvas.width, canvas.height) * 0.25;
   const startAngle = -0.5 * Math.PI; // 12 o'clock
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -490,7 +557,7 @@ function drawTimePie(canvasId, elapsedMs, remainingMs, titleText) {
     startAngle + fraction * 2 * Math.PI,
     startAngle + 2 * Math.PI
   );
-  ctx.fillStyle = "#e0e0e0";
+  ctx.fillStyle = remainingColor;
   ctx.fill();
 
   // --- Elapsed (green) ---
@@ -503,7 +570,7 @@ function drawTimePie(canvasId, elapsedMs, remainingMs, titleText) {
     startAngle,
     startAngle + fraction * 2 * Math.PI
   );
-  ctx.fillStyle = "#4CAF50";
+  ctx.fillStyle = elapsedColor;
   ctx.fill();
 
   // --- Outline ---
@@ -523,24 +590,24 @@ function drawTimePie(canvasId, elapsedMs, remainingMs, titleText) {
     centerY + Math.sin(boundaryAngle) * lineLen
   );
   ctx.strokeStyle = "red";
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 3;
   ctx.stroke();
-
+  ctx.lineWidth = 1;  
   // --- Arrowhead ---
-  const tipRadius = radius * 0.98;
+  const tipRadius = radius * 0.99;
   const tipX = centerX + Math.cos(boundaryAngle) * tipRadius;
   const tipY = centerY + Math.sin(boundaryAngle) * tipRadius;
-  const arrowSize = 6;
+  const arrowSize = 10;
 
   ctx.beginPath();
   ctx.moveTo(tipX, tipY);
   ctx.lineTo(
-    tipX - Math.cos(boundaryAngle - Math.PI / 8) * arrowSize,
-    tipY - Math.sin(boundaryAngle - Math.PI / 8) * arrowSize
+    tipX - Math.cos(boundaryAngle - Math.PI / 10) * arrowSize,
+    tipY - Math.sin(boundaryAngle - Math.PI / 10) * arrowSize
   );
   ctx.lineTo(
-    tipX - Math.cos(boundaryAngle + Math.PI / 8) * arrowSize,
-    tipY - Math.sin(boundaryAngle + Math.PI / 8) * arrowSize
+    tipX - Math.cos(boundaryAngle + Math.PI / 10) * arrowSize,
+    tipY - Math.sin(boundaryAngle + Math.PI / 10) * arrowSize
   );
   ctx.closePath();
   ctx.fillStyle = "red";
@@ -559,7 +626,7 @@ function drawTimePie(canvasId, elapsedMs, remainingMs, titleText) {
   });
 
   // --- Title ---
-  ctx.fillStyle = "#000";
+  ctx.fillStyle = "#000000";
   ctx.font = "14px Arial";
   ctx.textAlign = "center";
   ctx.fillText(titleText, centerX, centerY + radius + 22);
@@ -574,17 +641,19 @@ function drawTimePie(canvasId, elapsedMs, remainingMs, titleText) {
   let x = 20;
   const y = centerY + radius + 40;
 
-  ctx.fillStyle = "#4CAF50";
-  ctx.fillRect(x, y, 10, 10);
-  ctx.fillStyle = "#000";
-  ctx.fillText(`Complete: ${percentComplete}%`, x + 16, y + 9);
+   // Complete
+   ctx.fillStyle = elapsedColor;
+   ctx.fillRect(x, y, 10, 10);
+   ctx.fillStyle = "#000";
+   ctx.fillText(`Complete: ${percentComplete}%`, x + 16, y + 9);
 
-  x += ctx.measureText(`Complete: ${percentComplete}%`).width + 30;
+   x += ctx.measureText(`Complete: ${percentComplete}%`).width + 30;
 
-  ctx.fillStyle = "#e0e0e0";
-  ctx.fillRect(x, y, 10, 10);
-  ctx.fillStyle = "#000";
-  ctx.fillText(`Remaining: ${percentRemaining}%`, x + 16, y + 9);
+   // Remaining
+   ctx.fillStyle = remainingColor;
+   ctx.fillRect(x, y, 10, 10);
+   ctx.fillStyle = "#000";
+   ctx.fillText(`Remaining: ${percentRemaining}%`, x + 16, y + 9);
 }
 
 
@@ -592,6 +661,3 @@ function drawTimePie(canvasId, elapsedMs, remainingMs, titleText) {
  * CALL IT
  ***********************/
 loadAll(nowUTC);
-
-
-
