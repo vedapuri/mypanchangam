@@ -539,11 +539,11 @@ function drawTimePie(
 
   const fraction = elapsedMs / total;
 
-  // --- Geometry ---
-  const legendX = 20;                 // same as legend square
+// --- Geometry ---
+  const radius  = Math.min(canvas.width, canvas.height) * 0.25;
+  const legendX = 20;                 
   const centerX = legendX + radius + 12;
   const centerY = canvas.height / 2 - 20;
-  const radius  = Math.min(canvas.width, canvas.height) * 0.25;
   const startAngle = -0.5 * Math.PI; // 12 o'clock
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
