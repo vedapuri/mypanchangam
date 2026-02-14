@@ -504,8 +504,8 @@ function renderElementBlock({
 
   container.innerHTML = `
     <b>${title}</b><br><br>
-    Name: <b>${name}</b><br>
-    Starts at: ${fromLocal.toLocaleString()}<br>
+    <b>Name: ${name}</b><br>
+    Started at: ${fromLocal.toLocaleString()}<br>
     Ends at: ${toLocal.toLocaleString()}<br>
     Elapsed time: ${elapsedStr}<br>
     <b>Remaining time: ${remainingStr}</b><br>
@@ -547,7 +547,7 @@ function drawTimePie(
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // --- Remaining (gray) ---
+  // --- Remaining ---
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
   ctx.arc(
@@ -560,7 +560,7 @@ function drawTimePie(
   ctx.fillStyle = remainingColor;
   ctx.fill();
 
-  // --- Elapsed (green) ---
+  // --- Elapsed ---
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
   ctx.arc(
@@ -627,7 +627,7 @@ function drawTimePie(
 
   // --- Title ---
   ctx.fillStyle = "#000000";
-  ctx.font = "14px Arial";
+  ctx.font = "bold 16px Arial";
   ctx.textAlign = "center";
   ctx.fillText(titleText, centerX, centerY + radius + 22);
 
@@ -636,7 +636,7 @@ function drawTimePie(
   const percentRemaining = (100 - percentComplete).toFixed(2);
 
   ctx.textAlign = "left";
-  ctx.font = "14px Arial";
+  ctx.font = "bold 14px Arial";
 
   let x = 20;
   const y = centerY + radius + 40;
