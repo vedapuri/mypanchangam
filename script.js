@@ -28,7 +28,7 @@ const COLOR_CSV = "data_all_colours.csv";
 const ELEMENT_DEFINITIONS = {
   thithi: {
     key: "thithi",
-    title: "Thithi details",
+    title: "T H I T H I   D E T A I L S",
     containerId: "thithiBlock",
     csv: "data_thithi.csv",
     codeColumn: "othithi_thithi",
@@ -58,7 +58,7 @@ const ELEMENT_DEFINITIONS = {
   },
   nakshatram: {
     key: "nakshatram",
-    title: "Nakshatram details",
+    title: "N A K S H A T R A M   D E T A I L S",
     containerId: "nakshatramBlock", 
     csv: "data_nakshatram.csv",
     codeColumn: "onakshatram_nakshatram",
@@ -97,7 +97,7 @@ BHA: {name: "Apabharani", previous: "Ashwini", next: "Krutthika"}    },
   },
   yogam: {
     key: "yogam",
-    title: "Yogam details",
+    title: "Y O G A M   D E T A I L S",
     containerId: "yogamBlock",
     csv: "data_yogam.csv",
     codeColumn: "oyogam_yogam",
@@ -137,7 +137,7 @@ BHA: {name: "Apabharani", previous: "Ashwini", next: "Krutthika"}    },
   },
   karanam: {
     key: "karanam",
-    title: "Karanam details",
+    title: "K A R A N A M A N A M   D E T A I L S",
     containerId: "karanamBlock", 
     csv: "data_karanam.csv",
     codeColumn: "okaranam_number",
