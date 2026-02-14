@@ -540,7 +540,8 @@ function drawTimePie(
   const fraction = elapsedMs / total;
 
   // --- Geometry ---
-  const centerX = canvas.width / 2 - 40;
+  const legendX = 20;                 // same as legend square
+  const centerX = legendX + radius + 12;
   const centerY = canvas.height / 2 - 20;
   const radius  = Math.min(canvas.width, canvas.height) * 0.25;
   const startAngle = -0.5 * Math.PI; // 12 o'clock
@@ -629,17 +630,17 @@ function drawTimePie(
   ctx.fillStyle = "#000000";
   ctx.font = "18px Arial";
   ctx.textAlign = "center";
-  ctx.fillText(titleText, centerX, centerY + radius + 40);
+  ctx.fillText(titleText, centerX, centerY + radius + 36);
 
   // --- Legend ---
   const percentComplete = (fraction * 100).toFixed(2);
   const percentRemaining = (100 - percentComplete).toFixed(2);
 
   ctx.textAlign = "left";
-  ctx.font = " 18px Arial";
+  ctx.font = "16px Arial";
 
   let x = 20;
-  const y = centerY + radius + 40;
+  const y = centerY + radius + 62;
 
    // Complete
    ctx.fillStyle = elapsedColor;
