@@ -627,16 +627,16 @@ function drawTimePie(
 
   // --- Title ---
   ctx.fillStyle = "#000000";
-  ctx.font = "bold 16px Arial";
+  ctx.font = "18px Arial";
   ctx.textAlign = "center";
-  ctx.fillText(titleText, centerX, centerY + radius + 34);
+  ctx.fillText(titleText, centerX, centerY + radius + 40);
 
   // --- Legend ---
   const percentComplete = (fraction * 100).toFixed(2);
   const percentRemaining = (100 - percentComplete).toFixed(2);
 
   ctx.textAlign = "left";
-  ctx.font = "bold 14px Arial";
+  ctx.font = " 18px Arial";
 
   let x = 20;
   const y = centerY + radius + 40;
