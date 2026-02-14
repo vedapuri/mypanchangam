@@ -540,7 +540,7 @@ function drawTimePie(
   const fraction = elapsedMs / total;
 
   // --- Geometry ---
-  const centerX = canvas.width / 2 - 25;
+  const centerX = canvas.width / 2 - 40;
   const centerY = canvas.height / 2 - 20;
   const radius  = Math.min(canvas.width, canvas.height) * 0.25;
   const startAngle = -0.5 * Math.PI; // 12 o'clock
