@@ -540,7 +540,7 @@ function drawTimePie(
   const fraction = elapsedMs / total;
 
   // --- Geometry ---
-  const centerX = canvas.width / 2;
+  const centerX = canvas.width / 2 - 25;
   const centerY = canvas.height / 2 - 20;
   const radius  = Math.min(canvas.width, canvas.height) * 0.25;
   const startAngle = -0.5 * Math.PI; // 12 o'clock
@@ -629,7 +629,7 @@ function drawTimePie(
   ctx.fillStyle = "#000000";
   ctx.font = "bold 16px Arial";
   ctx.textAlign = "center";
-  ctx.fillText(titleText, centerX, centerY + radius + 22);
+  ctx.fillText(titleText, centerX, centerY + radius + 34);
 
   // --- Legend ---
   const percentComplete = (fraction * 100).toFixed(2);
