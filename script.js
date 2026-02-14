@@ -504,11 +504,11 @@ function renderElementBlock({
 
   container.innerHTML = `
     <b>${title}</b><br><br>
-    Name: ${name}<br>
+    Name: <b>${name}<b><br>
     Starts at: ${fromLocal.toLocaleString()}<br>
     Ends at: ${toLocal.toLocaleString()}<br>
     Elapsed time: ${elapsedStr}<br>
-    Remaining time: ${remainingStr}<br>
+    <b>Remaining time: ${remainingStr}<b><br>
     <canvas id="${canvasId}" width="450" height="400" style="margin-top:10px;"></canvas>
   `;
 
