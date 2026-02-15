@@ -645,6 +645,10 @@ function drawTimePie(
    // Complete
    ctx.fillStyle = elapsedColor;
    ctx.fillRect(x, y, 10, 10);
+   // Border (important!)
+   ctx.strokeStyle = "#666";
+   ctx.lineWidth = 1;
+   ctx.strokeRect(x, y, 10, 10);
    ctx.fillStyle = "#000";
    ctx.fillText(`Complete: ${percentComplete}%`, x + 16, y + 9);
 
@@ -653,6 +657,10 @@ function drawTimePie(
    // Remaining
    ctx.fillStyle = remainingColor;
    ctx.fillRect(x, y, 10, 10);
+   // Border (important!)
+   ctx.strokeStyle = "#666";
+   ctx.lineWidth = 1;
+   ctx.strokeRect(x, y, 10, 10);
    ctx.fillStyle = "#000";
    ctx.fillText(`Remaining: ${percentRemaining}%`, x + 16, y + 9);
 }
