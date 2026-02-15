@@ -590,7 +590,7 @@ function drawTimePie(
     centerX + Math.cos(boundaryAngle) * lineLen,
     centerY + Math.sin(boundaryAngle) * lineLen
   );
-  ctx.strokeStyle = "red";
+  ctx.strokeStyle = "blue";
   ctx.lineWidth = 3;
   ctx.stroke();
   ctx.lineWidth = 1;  
@@ -611,7 +611,7 @@ function drawTimePie(
     tipY - Math.sin(boundaryAngle + Math.PI / 10) * arrowSize
   );
   ctx.closePath();
-  ctx.fillStyle = "red";
+  ctx.fillStyle = "blue";
   ctx.fill();
 
   // --- 0 / 25 / 50 / 75 labels ---
