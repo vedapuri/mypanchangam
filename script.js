@@ -583,7 +583,7 @@ function drawTimePie(
 
   // --- Blue boundary line ---
   const boundaryAngle = startAngle + fraction * 2 * Math.PI;
-  const lineLen = radius * 0.80;
+  const lineLen = radius * 0.75;
 
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
@@ -596,7 +596,7 @@ function drawTimePie(
   ctx.stroke();
   ctx.lineWidth = 1;  
   // --- Arrowhead ---
-  const tipRadius = radius * 0.85;
+  const tipRadius = radius * 0.75;
   const tipX = centerX + Math.cos(boundaryAngle) * tipRadius;
   const tipY = centerY + Math.sin(boundaryAngle) * tipRadius;
   const arrowSize = 10;
