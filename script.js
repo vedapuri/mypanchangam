@@ -634,10 +634,12 @@ function drawTimePie(
   ctx.fillText(titleText, centerX, centerY + radius + 36);
 
   // --- Legend ---
-  const percentComplete = (fraction * 100).toFixed(2);
-  const percentRemaining = (100 - percentComplete).toFixed(2);
 
-  ctx.textAlign = "left";
+  const percentComplete = +(fraction * 100).toFixed(2);
+  const percentRemaining = +(100 - percentComplete).toFixed(2);
+  
+   
+   ctx.textAlign = "left";
   ctx.font = "16px Arial";
 
   let x = 20;
@@ -669,9 +671,9 @@ function drawTimePie(
    const revolutions = elapsedPercent; // 1 rev per 1%
    const angle = -Math.PI / 2 + revolutions * 2 * Math.PI;
 
-   const handColor = "red";
+   const handColor = "rgba(255,0,0,0.8)"; ;
    const handWidth = 3;
-   const handLength = radius * 0.7;
+   const handLength = radius * 0.98;
    ctx.beginPath();
    ctx.moveTo(centerX, centerY);
    ctx.lineTo(
