@@ -580,7 +580,7 @@ function drawTimePie(
   ctx.strokeStyle = "#333";
   ctx.stroke();
 
-  // --- Red boundary line ---
+  // --- Blue boundary line ---
   const boundaryAngle = startAngle + fraction * 2 * Math.PI;
   const lineLen = radius * 0.85;
 
