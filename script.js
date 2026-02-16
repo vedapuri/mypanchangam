@@ -581,41 +581,45 @@ function drawTimePie(
   ctx.strokeStyle = "#333";
   ctx.stroke();
 
-  // --- Blue boundary line ---
-  const boundaryAngle = startAngle + fraction * 2 * Math.PI;
-  const lineLen = radius * 0.75;
+  
+  // --- Blue boundary line WITH attached arrowhead ---
 
-  ctx.beginPath();
-  ctx.moveTo(centerX, centerY);
-  ctx.lineTo(
-    centerX + Math.cos(boundaryAngle) * lineLen,
-    centerY + Math.sin(boundaryAngle) * lineLen
-  );
-  ctx.strokeStyle = "blue";
-  ctx.lineWidth = 3;
-  ctx.stroke();
-  ctx.lineWidth = 1;  
-  // --- Arrowhead ---
-  const tipRadius = radius * 0.75;
-  const tipX = centerX + Math.cos(boundaryAngle) * tipRadius;
-  const tipY = centerY + Math.sin(boundaryAngle) * tipRadius;
-  const arrowSize = 10;
+const boundaryAngle = startAngle + fraction * 2 * Math.PI;
 
-  ctx.beginPath();
-  ctx.moveTo(tipX, tipY);
-  ctx.lineTo(
-    tipX - Math.cos(boundaryAngle - Math.PI / 10) * arrowSize,
-    tipY - Math.sin(boundaryAngle - Math.PI / 10) * arrowSize
-  );
-  ctx.lineTo(
-    tipX - Math.cos(boundaryAngle + Math.PI / 10) * arrowSize,
-    tipY - Math.sin(boundaryAngle + Math.PI / 10) * arrowSize
-  );
-  ctx.closePath();
-  ctx.fillStyle = "blue";
-  ctx.fill();
+// Single shared endpoint
+const boundaryLen = radius * 0.75;
+const endX = centerX + Math.cos(boundaryAngle) * boundaryLen;
+const endY = centerY + Math.sin(boundaryAngle) * boundaryLen;
 
-  // --- 0 / 25 / 50 / 75 labels ---
+// ---- Line ----
+ctx.beginPath();
+ctx.moveTo(centerX, centerY);
+ctx.lineTo(endX, endY);
+ctx.strokeStyle = "blue";
+ctx.lineWidth = 3;
+ctx.stroke();
+
+// ---- Arrowhead ----
+const arrowSize = 10;
+const arrowAngle = Math.PI / 10;
+
+ctx.beginPath();
+ctx.moveTo(endX, endY);
+ctx.lineTo(
+  endX - Math.cos(boundaryAngle - arrowAngle) * arrowSize,
+  endY - Math.sin(boundaryAngle - arrowAngle) * arrowSize
+);
+ctx.lineTo(
+  endX - Math.cos(boundaryAngle + arrowAngle) * arrowSize,
+  endY - Math.sin(boundaryAngle + arrowAngle) * arrowSize
+);
+ctx.closePath();
+ctx.fillStyle = "blue";
+ctx.fill();
+
+// Reset
+ctx.lineWidth = 1;
+// --- 0 / 25 / 50 / 75 labels ---
   ctx.fillStyle = "blue";
   ctx.font = "9px Arial";
   ["0", "25", "50", "75"].forEach((label, i) => {
