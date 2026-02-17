@@ -394,13 +394,18 @@ async function loadElementColors() {
   }
 }
 
+const ELEMENT_RESULTS = {};
 
 async function loadAll(nowUTC) {
   await loadElementColors();
+
   await loadElementData(ELEMENT_DEFINITIONS.thithi, nowUTC);
   await loadElementData(ELEMENT_DEFINITIONS.nakshatram, nowUTC);
   await loadElementData(ELEMENT_DEFINITIONS.yogam, nowUTC);
   await loadElementData(ELEMENT_DEFINITIONS.karanam, nowUTC);
+
+  renderAll();
+}
 }
 
 
@@ -431,23 +436,25 @@ async function loadElementData(def_element,nowUTC) {
       const pieColors = ELEMENT_COLORS[def_element.key] || {
         elapsed: "#FFB6C1",
         remaining: "#e0e0e0"};
-      renderElementBlock({
-        title: def_element.title,
-        name,
-        fromLocal: new Date(fromUTC),
-        toLocal: new Date(toUTC),
-        elapsedStr: formatDuration(elapsedMs),
-        remainingStr: formatDuration(remainingMs),
-        elapsedMs,
-        remainingMs,
-        canvasId: def_element.canvasId,
-        pieLabel: def_element.pieLabel, 
-        containerId: def_element.containerId,
-        elapsedColor: pieColors.elapsed,       
-        remainingColor: pieColors.remaining    
-      });
+      ELEMENT_RESULTS[def_element.key] = {
+          key: def_element.key,
+          title: def_element.title,
+          name,
+          fromLocal: new Date(fromUTC),
+          toLocal: new Date(toUTC),
+          elapsedStr,
+          remainingStr,
+          elapsedMs,
+          remainingMs,
+          canvasId: def_element.canvasId,
+          pieLabel: def_element.pieLabel,
+          containerId: def_element.containerId,
+          elapsedColor: pieColors.elapsed,
+          remainingColor: pieColors.remaining
+    };
 
-      return;
+    return;
+
     }
   }
 
@@ -456,6 +463,24 @@ async function loadElementData(def_element,nowUTC) {
   if (container) {
     container.innerHTML = `<b>${def_element.title}</b><br><br>No matching record for current time.`;
   }
+}
+function buildSummary() {
+  const t = ELEMENT_RESULTS.thithi;
+  const n = ELEMENT_RESULTS.nakshatram;
+  const y = ELEMENT_RESULTS.yogam;
+  const k = ELEMENT_RESULTS.karanam;
+
+  if (!t || !n || !y || !k) return "";
+
+  return `
+    <div style="margin:8px 0 12px 0; font-size:14px;">
+      <b>Summary:</b>
+      ${t.name} Thithi,
+      ${n.name} Nakshatram,
+      ${y.name} Yogam,
+      ${k.name} Karanam
+    </div>
+  `;
 }
 
 
@@ -516,6 +541,20 @@ function renderElementBlock({
   remainingColor);
 }
 
+function renderAll() {
+  // ---- Summary goes after Thithi title ----
+  const thithiContainer = document.getElementById("thithiBlock");
+  if (thithiContainer) {
+    thithiContainer.innerHTML =
+      `<b>${ELEMENT_RESULTS.thithi.title}</b>` +
+      buildSummary();
+  }
+
+  // ---- Render blocks exactly as before ----
+  Object.values(ELEMENT_RESULTS).forEach(data => {
+    renderElementBlock(data);
+  });
+}
 
 
 /***********************
