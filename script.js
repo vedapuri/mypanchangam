@@ -436,6 +436,12 @@ async function loadElementData(def_element,nowUTC) {
       const pieColors = ELEMENT_COLORS[def_element.key] || {
         elapsed: "#FFB6C1",
         remaining: "#e0e0e0"};
+      const elapsedStr   = formatDuration(elapsedMs);
+      const remainingStr = formatDuration(remainingMs);
+
+      
+      
+      
       ELEMENT_RESULTS[def_element.key] = {
           key: def_element.key,
           title: def_element.title,
@@ -542,19 +548,12 @@ function renderElementBlock({
 }
 
 function renderAll() {
-  // ---- Summary goes after Thithi title ----
-  const thithiContainer = document.getElementById("thithiBlock");
-  if (thithiContainer) {
-    thithiContainer.innerHTML =
-      `<b>${ELEMENT_RESULTS.thithi.title}</b>` +
-      buildSummary();
-  }
-
-  // ---- Render blocks exactly as before ----
+  function renderAll() {
   Object.values(ELEMENT_RESULTS).forEach(data => {
     renderElementBlock(data);
   });
 }
+
 
 
 /***********************
