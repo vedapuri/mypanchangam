@@ -426,8 +426,10 @@ async function loadAll(nowUTC) {
 
 
 
-async function loadElementData(def_element,nowUTC) {
-
+/***********************
+ * UPDATED ELEMENT DATA LOAD + REFRESH
+ ***********************/
+async function loadElementData(def_element, nowUTC) {
   const response = await fetch(def_element.csv + "?v=" + Date.now());
   const text = await response.text();
   const lines = text.trim().split("\n");
@@ -435,11 +437,18 @@ async function loadElementData(def_element,nowUTC) {
   const headers = lines[0].split(",").map(h => h.trim());
   const idx = name => headers.indexOf(name);
 
+  let matched = false;
+
   for (const line of lines.slice(1)) {
     const cols = line.split(",");
 
     const fromUTC = parseUTC(cols, idx, def_element.fromPrefix);
     const toUTC   = parseUTC(cols, idx, def_element.toPrefix);
+
+    if (isNaN(fromUTC) || isNaN(toUTC)) {
+      console.warn(`Invalid date for ${def_element.key}:`, cols);
+      continue;
+    }
 
     if (nowUTC >= fromUTC && nowUTC < toUTC) {
       const code = cols[idx(def_element.codeColumn)];
@@ -452,39 +461,38 @@ async function loadElementData(def_element,nowUTC) {
       const remainingMs = toUTC - nowUTC;
       const pieColors = ELEMENT_COLORS[def_element.key] || {
         elapsed: "#FFB6C1",
-        remaining: "#e0e0e0"};
+        remaining: "#e0e0e0"
+      };
       const elapsedStr   = formatDuration(elapsedMs);
       const remainingStr = formatDuration(remainingMs);
 
-      
-      
-      
       ELEMENT_RESULTS[def_element.key] = {
-          key: def_element.key,
-          title: def_element.title,
-          name,
-          fromLocal: new Date(fromUTC),
-          toLocal: new Date(toUTC),
-          elapsedStr,
-          remainingStr,
-          elapsedMs,
-          remainingMs,
-          canvasId: def_element.canvasId,
-          pieLabel: def_element.pieLabel,
-          containerId: def_element.containerId,
-          elapsedColor: pieColors.elapsed,
-          remainingColor: pieColors.remaining
-    };
+        key: def_element.key,
+        title: def_element.title,
+        name,
+        fromLocal: new Date(fromUTC),
+        toLocal: new Date(toUTC),
+        elapsedStr,
+        remainingStr,
+        elapsedMs,
+        remainingMs,
+        canvasId: def_element.canvasId,
+        pieLabel: def_element.pieLabel,
+        containerId: def_element.containerId,
+        elapsedColor: pieColors.elapsed,
+        remainingColor: pieColors.remaining
+      };
 
-    return;
-
+      matched = true;
+      break; // stop after first match
     }
   }
 
-  // --- No matching record ---
-  const container = document.getElementById(def_element.containerId);
-  if (container) {
-    container.innerHTML = `<b>${def_element.title}</b><br><br>No matching record for current time.`;
+  if (!matched) {
+    const container = document.getElementById(def_element.containerId);
+    if (container) {
+      container.innerHTML = `<b>${def_element.title}</b><br><br>No matching record for current time.`;
+    }
   }
 }
 function buildSummary() {
@@ -576,56 +584,45 @@ function renderAll() {
  * PIE CHART
  ***********************/
 
+/***********************
+ * UPDATED PIE HAND CALCULATION
+ ***********************/
 function drawTimePie(
   canvasId, 
   elapsedMs, 
   remainingMs, 
   titleText, 
   elapsedColor,
-  remainingColor)
- {
+  remainingColor
+) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
 
-  const total = elapsedMs + remainingMs;
-  if (total <= 0) return;
-
   const totalMs = elapsedMs + remainingMs;
-  const fraction = elapsedMs / total;
+  if (totalMs <= 0) return;
+  const fraction = elapsedMs / totalMs;
 
-// --- Geometry ---
+  // --- Geometry ---
   const radius  = Math.min(canvas.width, canvas.height) * 0.25;
   const legendX = 20;                 
   const centerX = legendX + radius + 12;
   const centerY = canvas.height / 2 - 20;
-  const startAngle = -0.5 * Math.PI; // 12 o'clock
+  const startAngle = -0.5 * Math.PI;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // --- Remaining ---
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
-  ctx.arc(
-    centerX,
-    centerY,
-    radius,
-    startAngle + fraction * 2 * Math.PI,
-    startAngle + 2 * Math.PI
-  );
+  ctx.arc(centerX, centerY, radius, startAngle + fraction * 2 * Math.PI, startAngle + 2 * Math.PI);
   ctx.fillStyle = remainingColor;
   ctx.fill();
 
   // --- Elapsed ---
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
-  ctx.arc(
-    centerX,
-    centerY,
-    radius,
-    startAngle,
-    startAngle + fraction * 2 * Math.PI
-  );
+  ctx.arc(centerX, centerY, radius, startAngle, startAngle + fraction * 2 * Math.PI);
   ctx.fillStyle = elapsedColor;
   ctx.fill();
 
@@ -635,119 +632,55 @@ function drawTimePie(
   ctx.strokeStyle = "#333";
   ctx.stroke();
 
-  
-  // --- Blue boundary line WITH attached arrowhead ---
+  // --- Progress hand (updated) ---
+  const angle = startAngle + fraction * 2 * Math.PI;
+  const handLength = radius * 0.98;
+  ctx.beginPath();
+  ctx.moveTo(centerX, centerY);
+  ctx.lineTo(centerX + Math.cos(angle) * handLength, centerY + Math.sin(angle) * handLength);
+  ctx.strokeStyle = "rgba(255,0,0,0.8)";
+  ctx.lineWidth = 3;
+  ctx.stroke();
+  ctx.lineWidth = 1;
 
-const boundaryAngle = startAngle + fraction * 2 * Math.PI;
-
-// Single shared endpoint
-const boundaryLen = radius * 0.75;
-const endX = centerX + Math.cos(boundaryAngle) * boundaryLen;
-const endY = centerY + Math.sin(boundaryAngle) * boundaryLen;
-
-// ---- Line ----
-ctx.beginPath();
-ctx.moveTo(centerX, centerY);
-ctx.lineTo(endX, endY);
-ctx.strokeStyle = "blue";
-ctx.lineWidth = 3;
-ctx.stroke();
-
-// ---- Arrowhead ----
-const arrowSize = 10;
-const arrowAngle = Math.PI / 10;
-
-ctx.beginPath();
-ctx.moveTo(endX, endY);
-ctx.lineTo(
-  endX - Math.cos(boundaryAngle - arrowAngle) * arrowSize,
-  endY - Math.sin(boundaryAngle - arrowAngle) * arrowSize
-);
-ctx.lineTo(
-  endX - Math.cos(boundaryAngle + arrowAngle) * arrowSize,
-  endY - Math.sin(boundaryAngle + arrowAngle) * arrowSize
-);
-ctx.closePath();
-ctx.fillStyle = "blue";
-ctx.fill();
-
-// Reset
-ctx.lineWidth = 1;
-// --- 0 / 25 / 50 / 75 labels ---
+  // --- Legend & Title unchanged ---
+  const percentComplete = +(fraction * 100).toFixed(2);
+  const percentRemaining = +(100 - percentComplete).toFixed(2);
   ctx.fillStyle = "blue";
   ctx.font = "9px Arial";
   ["0", "25", "50", "75"].forEach((label, i) => {
     const a = startAngle + i * 0.25 * 2 * Math.PI;
-    ctx.fillText(
-      label,
-      centerX + Math.cos(a) * radius * 0.82 - 6,
-      centerY + Math.sin(a) * radius * 0.82 + 4
-    );
+    ctx.fillText(label, centerX + Math.cos(a) * radius * 0.82 - 6, centerY + Math.sin(a) * radius * 0.82 + 4);
   });
-
-  // --- Title ---
   ctx.fillStyle = "#000000";
   ctx.font = "18px Arial";
   ctx.textAlign = "center";
   ctx.fillText(titleText, centerX, centerY + radius + 36);
-
-  // --- Legend ---
-
-  const percentComplete = +(fraction * 100).toFixed(2);
-  const percentRemaining = +(100 - percentComplete).toFixed(2);
-  
-   
-   ctx.textAlign = "left";
+  // Legend boxes
+  ctx.textAlign = "left";
   ctx.font = "16px Arial";
-
   let x = 20;
   const y = centerY + radius + 62;
-
-   // Complete
-   ctx.fillStyle = elapsedColor;
-   ctx.fillRect(x, y, 10, 10);
-   // Border (important!)
-   ctx.strokeStyle = "#666";
-   ctx.lineWidth = 1;
-   ctx.strokeRect(x, y, 10, 10);
-   ctx.fillStyle = "#000";
-   ctx.fillText(`Complete: ${percentComplete}%`, x + 16, y + 9);
-
-   x += ctx.measureText(`Complete: ${percentComplete}%`).width + 30;
-
-   // Remaining
-   ctx.fillStyle = remainingColor;
-   ctx.fillRect(x, y, 10, 10);
-   // Border (important!)
-   ctx.strokeStyle = "#666";
-   ctx.lineWidth = 1;
-   ctx.strokeRect(x, y, 10, 10);
-   ctx.fillStyle = "#000";
-   ctx.fillText(`Remaining: ${percentRemaining}%`, x + 16, y + 9);
-
-   const elapsedPercent = (elapsedMs / totalMs) * 100; // e.g. 2.37%
-   const revolutions = elapsedPercent; // 1 rev per 1%
-   const angle = -Math.PI / 2 + revolutions * 2 * Math.PI;
-
-   const handColor = "rgba(255,0,0,0.8)"; ;
-   const handWidth = 3;
-   const handLength = radius * 0.98;
-   ctx.beginPath();
-   ctx.moveTo(centerX, centerY);
-   ctx.lineTo(
-   centerX + Math.cos(angle) * handLength,
-   centerY + Math.sin(angle) * handLength
-   );
-   ctx.strokeStyle = handColor;
-   ctx.lineWidth = handWidth;
-   ctx.stroke();
-   ctx.lineWidth = 1; // reset (important)
-
-
+  ctx.fillStyle = elapsedColor;
+  ctx.fillRect(x, y, 10, 10);
+  ctx.strokeStyle = "#666"; ctx.strokeRect(x, y, 10, 10);
+  ctx.fillStyle = "#000"; ctx.fillText(`Complete: ${percentComplete}%`, x + 16, y + 9);
+  x += ctx.measureText(`Complete: ${percentComplete}%`).width + 30;
+  ctx.fillStyle = remainingColor;
+  ctx.fillRect(x, y, 10, 10);
+  ctx.strokeRect(x, y, 10, 10);
+  ctx.fillStyle = "#000"; ctx.fillText(`Remaining: ${percentRemaining}%`, x + 16, y + 9);
 }
 
-
 /***********************
- * CALL IT
+ * REFRESH LOOP
  ***********************/
-loadAll(nowUTC);
+function refreshAll() {
+  const nowLocal = new Date();
+  const nowUTC = nowLocal.getTime();
+  loadAll(nowUTC);
+}
+
+// refresh every minute
+setInterval(refreshAll, 60 * 1000);
+
