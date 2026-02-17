@@ -361,13 +361,18 @@ const nowLocal = new Date();
 nowLocal.setSeconds(0, 0);        // normalize seconds
 const nowUTC = nowLocal.getTime();
 
-// Display current time
-document.getElementById("nowTime").innerHTML =
-  `<b>Current date & time:</b> ${nowLocal.toLocaleString()}`;
+document.addEventListener("DOMContentLoaded", () => {
+    // Display current time
+    document.getElementById("nowTime").innerHTML =
+      `<b>Current date & time:</b> ${nowLocal.toLocaleString()}`;
 
-// Debug version stamp
-document.getElementById("version").textContent =
-  "JS loaded: " + new Date().toLocaleString();
+    // Debug version stamp
+    document.getElementById("version").textContent =
+      "JS loaded: " + new Date().toLocaleString();
+
+    // Load everything
+    loadAll(nowUTC);
+});
 
 
 /***********************
@@ -416,9 +421,6 @@ async function loadAll(nowUTC) {
   // --- Then render all element blocks ---
   renderAll();
 }
-
-  // --- Then render all element blocks ---
-  renderAll();
 }
 
 
@@ -563,7 +565,6 @@ function renderElementBlock({
 }
 
 function renderAll() {
-  function renderAll() {
   Object.values(ELEMENT_RESULTS).forEach(data => {
     renderElementBlock(data);
   });
