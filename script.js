@@ -406,7 +406,7 @@ async function loadAll(nowUTC) {
 
   renderAll();
 }
-}
+
 
 
 async function loadElementData(def_element,nowUTC) {
