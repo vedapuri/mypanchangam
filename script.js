@@ -404,15 +404,18 @@ async function loadAll(nowUTC) {
   await loadElementData(ELEMENT_DEFINITIONS.yogam, nowUTC);
   await loadElementData(ELEMENT_DEFINITIONS.karanam, nowUTC);
 
-  // --- Insert summary immediately after JS load line ---
+  // --- INSERT SUMMARY RIGHT AFTER VERSION DIV ---
   const versionDiv = document.getElementById("version");
   if (versionDiv) {
     const summaryHTML = buildSummary();
     if (summaryHTML) {
-      // Insert after the version div
       versionDiv.insertAdjacentHTML("afterend", summaryHTML);
     }
   }
+
+  // --- Then render all element blocks ---
+  renderAll();
+}
 
   // --- Then render all element blocks ---
   renderAll();
