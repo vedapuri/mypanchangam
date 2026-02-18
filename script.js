@@ -449,7 +449,7 @@ async function loadElementData(def_element,nowUTC) {
       const pieColors = ELEMENT_COLORS[def_element.key] || {
         elapsed: "#FFB6C1",
         remaining: "#e0e0e0"};
-let resolvedExtras = null;
+      let resolvedExtras = null;
 
      if (def_element.extraLookups) {
         resolvedExtras = {};
@@ -469,11 +469,16 @@ let resolvedExtras = null;
         }
       }
 		if (def_element.key === "thithi") {
-		  const container = document.getElementById(def_element.containerId);
-		  if (container) container.innerHTML = "";
+  			const extras = {
+    			varsham: cols[idx("othithi_varsham")],
+    			masam: cols[idx("othithi_masam")],
+    			paksham: cols[idx("othithi_paksham")],
+    			ruthu: cols[idx("othithi_ruthu")]
+  			};
 
-		  renderThithiExtras(def_element.containerId, resolvedExtras);
-		}
+  renderThithiExtras(extras);
+}
+
       renderElementBlock({
         title: def_element.title,
         name,
@@ -505,22 +510,17 @@ let resolvedExtras = null;
 /***********************
  * HELPERS
  ***********************/
-function renderThithiExtras(containerId, extras) {
-  if (!extras) return;
-
-  const container = document.getElementById(containerId);
+function renderThithiExtras(data) {
+  const container = document.getElementById("thithiExtras");
   if (!container) return;
 
-  container.innerHTML += `
-    <div style="margin-bottom:12px;">
-      <b>Additional Thithi Details</b><br>
-      Paksham: ${extras.paksham.name}
-        (Prev: ${extras.paksham.previous},
-         Next: ${extras.paksham.next})<br>
-    </div>
-  `;
+  container.innerHTML = `
+    Varsham: ${data.varsham}<br>
+    Ruthu: ${data.ruthu}<br>
+	Masam: ${data.masam}<br>
+    Paksham: ${data.paksham}<br>
+	`;
 }
-
 
 function parseUTC(cols, idx, prefix) {
   const d = cols[idx(prefix + "_date")];
