@@ -1,3 +1,146 @@
+
+const varsham_data = {
+  PBV: {name: "Prabhava",previous: "Akshaya",next: "Vibhava"},
+  VBV: {name: "Vibhava",previous: "Prabhava",next: "Shukla"},
+  SHU: {name: "Shukla",previous: "Vibhava",next: "Pramodutha"},
+  PMD: {name: "Pramodutha",previous: "Shukla",next: "Prajotpatthi"},
+  PJP: {name: "Prajotpatthi",previous: "Pramodutha",next: "Aangirasa"}, 
+
+  AAN: {name: "Aangirasa",previous: "Prajotpatthi",next: "Shrimukha"},
+  SMK: {name: "Shrimukha",previous: "Aangirasa",next: "Bhava"},
+  BHV: {name: "Bhava",previous: "Shrimukha",next: "Yuva"},
+  YUV: {name: "Yuva",previous: "Bhava",next: "Dhathu"},
+  DHT: {name: "Dhathu",previous: "Yuva",next: "Eashwara"},
+
+  EAS: {name: "Eashwara",previous: "Dhathu",next: "Bahudhanya"},
+  BDY: {name: "Bahudhanya",previous: "Eashwara",next: "Pramadhi"},
+  PMA: {name: "Pramadhi",previous: "Bahudhanya",next: "Vikrama"},
+  VKM: {name: "Vikrama",previous: "Pramadhi",next: "Vishu"},
+  VSH: {name: "Vishu",previous: "Vikrama",next: "Chitrabhanu"},
+
+  CBH: {name: "Chitrabhanu",previous: "Vishu",next: "Swabhanu"},
+  SBH: {name: "Swabhanu",previous: "Chitrabhanu",next: "Dharana"},
+  DHA: {name: "Dharana",previous: "Swabhanu",next: "Paarthiva"},
+  PAA: {name: "Paarthiva",previous: "Dharana",next: "Vyaya"},
+  VIY: {name: "Vyaya",previous: "Paarthiva",next: "Sarvajit"},
+
+  SVJ: {name: "Sarvajit",previous: "Vyaya",next: "Sarvadhari"},
+  SVD: {name: "Sarvadhari",previous: "Sarvajit",next: "Virodhi"},
+  VRD: {name: "Virodhi",previous: "Sarvadhari",next: "Vikruthi"},
+  VKT: {name: "Vikruthi",previous: "Virodhi",next: "Kara"},
+  KAR: {name: "Kara",previous: "Vikruthi",next: "Nandana"},
+
+  NAN: {name: "Nandana",previous: "Kara",next: "Vijaya"},
+  VIJ: {name: "Vijaya",previous: "Nandana",next: "Jaya"},
+  JAY: {name: "Jaya",previous: "Vijaya",next: "Manmatha"},
+  MAN: {name: "Manmatha",previous: "Jaya",next: "Dhurmukhi"},
+  DRM: {name: "Dhurmukhi",previous: "Manmatha",next: "Heyvilambi"},
+
+  HEY: {name: "Heyvilambi",previous: "Dhurmukhi",next: "Vilambi"},
+  VIL: {name: "Vilambi",previous: "Heyvilambi",next: "Vikari"},
+  VKR: {name: "Vikari",previous: "Vilambi",next: "Shaarvari"},
+  SHA: {name: "Shaarvari",previous: "Vikari",next: "Plava"},
+  PLA: {name: "Plava",previous: "Shaarvari",next: "Shubhakruth"},
+
+  SBK: {name: "Shubhakruth",previous: "Plava",next: "Shobhakruth"},
+  SHB: {name: "Shobhakruth",previous: "Shubhakruth",next: "Krodhi"},
+  KRD: {name: "Krodhi",previous: "Shobhakruth",next: "Vishwavasu"},
+  VWV: {name: "Vishwavasu",previous: "Krodhi",next: "Paraabhava"},
+  PAR: {name: "Paraabhava",previous: "Vishwavasu",next: "Plavanga"},
+
+  PVG: {name: "Plavanga",previous: "Paraabhava",next: "Keelaka"},
+  KLK: {name: "Keelaka",previous: "Plavanga",next: "Sowmya"},
+  SOW: {name: "Sowmya",previous: "Keelaka",next: "Saadhaarana"},
+  SAD: {name: "Saadhaarana",previous: "Sowmya",next: "Virodhikruthi"},
+  VDK: {name: "Virodhikruthi",previous: "Saadhaarana",next: "Paritaapi"},
+
+  PTP: {name: "Paritaapi",previous: "Virodhikruthi",next: "Pramadhicha"},
+  PMC: {name: "Pramadhicha",previous: "Paritaapi",next: "Aananda"},
+  ANA: {name: "Aananda",previous: "Pramadhicha",next: "Raakshasa"},
+  RAK: {name: "Raakshasa",previous: "Aananda",next: "Nala"},
+  NAL: {name: "Nala",previous: "Raakshasa",next: "Pingala"},
+
+  PIN: {name: "Pingala",previous: "Nala",next: "Kaalayukthi"},
+  KAA: {name: "Kaalayukthi",previous: "Pingala",next: "Siddhaarthi"},
+  SID: {name: "Siddhaarthi",previous: "Kaalayukthi",next: "Raudhri"},
+  RAU: {name: "Raudhri",previous: "Siddhaarthi",next: "Dhurmathi"},
+  DHU: {name: "Dhurmathi",previous: "Raudhri",next: "Dhundhubi"},
+
+  DHN: {name: "Dhundhubi",previous: "Dhurmathi",next: "Rudraotkaari"},
+  RUD: {name: "Rudraotkaari",previous: "Dhundhubi",next: "Raktaakshi"},
+  RKT: {name: "Raktaakshi",previous: "Rudraotkaari",next: "Krodhana"},
+  KRO: {name: "Krodhana",previous: "Raktaakshi",next: "Akshaya"},
+  AKS: {name: "Akshaya",previous: "Krodhana",next: "Prabhava"}
+};
+
+
+
+const ayanam_data = {
+  UTT: {
+    name: "Uttaraayanam",
+    previous: "Dakshinaayanam",
+    next: "Dakshinaayanam"
+  },
+  DAK: {
+    name: "Dakshinaayanam",
+    previous: "Uttaraayanam",
+    next: "Uttaraayanam"
+  }
+};
+
+const ruthu_data = {
+  VAS: {name: "Vasantha", previous: "Shishira", next: "Greeshma"},
+  GRE: {name: "Greeshma", previous: "Vasantha", next: "Varsha"},
+  VAR: {name: "Varsha", previous: "Greeshma", next: "Sharad"},
+  SHA: {name: "Sharad", previous: "Varsha", next: "Hemantha"},
+  HEM: {name: "Hemantha", previous: "Sharad", next: "Shishira"},
+  SHI: {name: "Shishira", previous: "Hemantha", next: "Vasantha"}    
+};
+
+const masam_data = {
+CHA: {name: "Chaitra", previous: "Phaalguna", next: "Vaishaakha"},
+VAI: {name: "Vaishaakha", previous: "Chaitra", next: "Jyeshta"},
+JYE: {name: "Jyeshta", previous: "Vaishaakha", next: "Aashaada"},
+AAS: {name: "Aashaada", previous: "Jyeshta", next: "Shraavan"},
+SHR: {name: "Shraavan", previous: "Aashaada", next: "Bhaadrapada"},
+BHA: {name: "Bhaadrapada", previous: "Shraavan", next: "Aashvayuja"},
+ASV: {name: "Aashvayuja", previous: "Bhaadrapada", next: "Kaarthik"},
+KAR: {name: "Kaarthik", previous: "Aashvayuja", next: "Maargasheersha"},
+MGS: {name: "Maargasheersha", previous: "Kaarthik", next: "Pausha"},
+PAU: {name: "Pausha", previous: "Maargasheersha", next: "Maagha"},
+MAG: {name: "Maagha", previous: "Pausha", next: "Phaalguna"},
+PHA: {name: "Phaalguna", previous: "Maagha", next: "Chaitra"},
+CH1: {name: "Adhika Chaitra", previous: "Phaalguna", next: "Chaitra"},
+VA1: {name: "Adhika Vaishaakha", previous: "Chaitra", next: "Vaishaakha"},
+JY1: {name: "Adhika Jyeshta", previous: "Vaishaakha", next: "Jyeshta"},
+AA1: {name: "Adhika Aashaada", previous: "Jyeshta", next: "Aashaada"},
+SH1: {name: "Adhika Shraavan", previous: "Aashaada", next: "Shraavan"},
+BH1: {name: "Adhika Bhaadrapada", previous: "Shraavan", next: "Bhaadrapada"},
+AS1: {name: "Adhika Aashvayuja", previous: "Bhaadrapada", next: "Aashvayuja"},
+KA1: {name: "Adhika Kaarthik", previous: "Aashvayuja", next: "Kaarthik"},
+MG1: {name: "Adhika Maargasheersha", previous: "Kaarthik", next: "Maargasheersha"},
+PA1: {name: "Adhika Pausha", previous: "Maargasheersha", next: "Pausha"},
+MA1: {name: "Adhika Maagha", previous: "Pausha", next: "Maagha"},
+PH1: {name: "Adhika Phaalguna", previous: "Maagha", next: "Phaalguna"}
+};
+
+
+
+const paksham_data = {
+SHU: {name: "Shukla", previous: "Krishna", next: "Krishna"},
+KRI: {name: "Krishna", previous: "Shukla", next: "Shukla"}
+};
+
+const day_of_week_data = {
+Sunday: {name: "Bhanu"},
+Monday: {name: "Indu"},
+Tuesday: {name: "Bhowma"},
+Wednesday: {name: "Sowmya"},
+Thursday: {name: "Guru"},
+Friday: {name: "Bhrugu"},
+Saturday: {name: "Sthira"}
+};
+
 /***********************
  * COLOUR DEFINITIONS
  ***********************/
@@ -735,7 +878,7 @@ ctx.lineWidth = 1;
    const revolutions = elapsedPercent; // 1 rev per 1%
    const angle = -Math.PI / 2 + revolutions * 2 * Math.PI;
 
-   const handColor = "rgba(255,0,0,0.8)"; ;
+   const handColor = "rgba(255,0,0,0.8)"; 
    const handWidth = 3;
    const handLength = radius * 0.98;
    ctx.beginPath();
