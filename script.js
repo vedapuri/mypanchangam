@@ -469,12 +469,18 @@ async function loadElementData(def_element,nowUTC) {
         }
       }
 		if (def_element.key === "thithi") {
-  			const extras = {
-    			varsham: cols[idx("othithi_varsham")],
-    			masam: cols[idx("othithi_masam")],
-    			paksham: cols[idx("othithi_paksham")],
-    			ruthu: cols[idx("othithi_ruthu")]
-  			};
+  			const varshamCode = cols[idx("othithi_varsham")];
+			const masamCode   = cols[idx("othithi_masam")];
+			const pakshamCode = cols[idx("othithi_paksham")];
+			const ruthuCode   = cols[idx("othithi_ruthu")];
+
+			const extras = {
+  			varsham: lookupName(VARSHAM_DATA, varshamCode),
+  			masam:   lookupName(MASAM_DATA, masamCode),
+  			paksham: lookupName(PAKSHAM_DATA, pakshamCode),
+  			ruthu:   lookupName(RUTHU_DATA, ruthuCode)
+			};
+
 
   renderThithiExtras(extras);
 }
@@ -510,15 +516,18 @@ async function loadElementData(def_element,nowUTC) {
 /***********************
  * HELPERS
  ***********************/
+function lookupName(dict, code) {
+  return dict?.[code]?.name ?? code ?? "—";
+}
 function renderThithiExtras(data) {
   const container = document.getElementById("thithiExtras");
   if (!container) return;
 
-  container.innerHTML = `
-    Varsham: ${data.varsham}<br>
-    Ruthu: ${data.ruthu}<br>
-	Masam: ${data.masam}<br>
-    Paksham: ${data.paksham}<br>
+  	container.innerHTML = `
+    	Varsham: ${data.varsham}<br>
+    	Ruthu: ${data.ruthu}<br>
+		Masam: ${data.masam}<br>
+    	Paksham: ${data.paksham}<br>
 	`;
 }
 
