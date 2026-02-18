@@ -1,7 +1,6 @@
 /***********************
  * COLOUR DEFINITIONS
  ***********************/
-
 const ELEMENT_COLORS = {
   thithi: {
     elapsed: "#FFB6C1",
@@ -35,6 +34,24 @@ const ELEMENT_DEFINITIONS = {
     codeColumn: "othithi_thithi",
     fromPrefix: "othithi_start",
     toPrefix: "othithi_end",
+    extraLookups: {
+       varsham: {
+         column: "othithi_varsham",
+         dictionary: varsham_data
+       },
+       ruthu: {
+         column: "othithi_ruthu",
+         dictionary: ruthu_data
+       },
+       masam: {
+         column: "othithi_masam",
+         dictionary: masam_data
+       },
+       paksham: {
+         column: "othithi_paksham",
+         dictionary: paksham_data
+       }
+     },
     mapping: {
   PRA: { name: "Prathama", previous: null,        next: "Dwitheeya" },
   DWI: { name: "Dwitheeya", previous: "Prathama", next: "Trutheeya" },
@@ -432,6 +449,31 @@ async function loadElementData(def_element,nowUTC) {
       const pieColors = ELEMENT_COLORS[def_element.key] || {
         elapsed: "#FFB6C1",
         remaining: "#e0e0e0"};
+let resolvedExtras = null;
+
+     if (def_element.extraLookups) {
+        resolvedExtras = {};
+
+        for (const [key, cfg] of Object.entries(def_element.extraLookups)) {
+          const colIdx = idx(cfg.column);
+          const code = colIdx !== -1 ? cols[colIdx] : null;
+
+          const dictEntry = code && cfg.dictionary[code];
+
+                resolvedExtras[key] = {
+                  code,
+                  name: dictEntry?.name ?? code ?? "—",
+                  previous: dictEntry?.previous ?? "—",
+                  next: dictEntry?.next ?? "—"
+          };
+        }
+      }
+		if (def_element.key === "thithi") {
+		  const container = document.getElementById(def_element.containerId);
+		  if (container) container.innerHTML = "";
+
+		  renderThithiExtras(def_element.containerId, resolvedExtras);
+		}
       renderElementBlock({
         title: def_element.title,
         name,
@@ -463,6 +505,23 @@ async function loadElementData(def_element,nowUTC) {
 /***********************
  * HELPERS
  ***********************/
+function renderThithiExtras(containerId, extras) {
+  if (!extras) return;
+
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.innerHTML += `
+    <div style="margin-bottom:12px;">
+      <b>Additional Thithi Details</b><br>
+      Paksham: ${extras.paksham.name}
+        (Prev: ${extras.paksham.previous},
+         Next: ${extras.paksham.next})<br>
+    </div>
+  `;
+}
+
+
 function parseUTC(cols, idx, prefix) {
   const d = cols[idx(prefix + "_date")];
   const hh = cols[idx(prefix + "_hour")].padStart(2, "0");
