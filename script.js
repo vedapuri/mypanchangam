@@ -474,6 +474,8 @@ async function loadElementData(def_element,nowUTC) {
 			const pakshamCode = cols[idx("othithi_paksham")];
 			const ruthuCode   = cols[idx("othithi_ruthu")];
 
+			const varshamName = VARSHAM_DATA[varshamCode]?.name ?? "—";
+
 			const extras = {
   			varsham: lookupName(VARSHAM_DATA, varshamCode),
   			masam:   lookupName(MASAM_DATA, masamCode),
