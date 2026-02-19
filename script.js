@@ -489,30 +489,18 @@ async function loadElementData(def_element,nowUTC) {
         }
       }
 		if (def_element.key === "thithi") {
-  			const varshamCode = cols[idx("othithi_varsham")];
-			const masamCode   = cols[idx("othithi_masam")];
-			const pakshamCode = cols[idx("othithi_paksham")];
-			const ruthuCode   = cols[idx("othithi_ruthu")];
+  			const extras = {
+    			varsham: varshamName,
+    			masam:   masamName,
+    			paksham: pakshamName,
+    			ruthu:   ruthuName,
+    			weekday: CURRENT_DAY_INFO.weekday,
+    			weekdayTrad: CURRENT_DAY_INFO.traditional
+  					};
 
-			const varshamName = varsham_data[varshamCode]?.name ?? "—";
-			const ruthuName = ruthu_data[ruthuCode]?.name ?? "—";
-			const masamName = masam_data[masamCode]?.name ?? "—";
-			const pakshamName = paksham_data[pakshamCode]?.name ?? "—";
+  			renderThithiExtras(extras);
+			}
 
-			const extras = {
-  				varsham: varshamName,
-  				masam:   masamName,
-  				paksham: pakshamName,
-  				ruthu:   ruthuName,
-  				weekday: CURRENT_DAY_INFO.weekday,
-  				weekdayTrad: CURRENT_DAY_INFO.traditional
-};
-
-			};
-
-
-  renderThithiExtras(extras);
-}
 
       renderElementBlock({
         title: def_element.title,
