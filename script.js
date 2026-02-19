@@ -474,13 +474,16 @@ async function loadElementData(def_element,nowUTC) {
 			const pakshamCode = cols[idx("othithi_paksham")];
 			const ruthuCode   = cols[idx("othithi_ruthu")];
 
-			const varshamName = VARSHAM_DATA[varshamCode]?.name ?? "—";
+			const varshamName = varsham_data[varshamCode]?.name ?? "—";
+			const ruthuName = ruthu_data[ruthuCode]?.name ?? "—";
+			const masamName = masam_data[masamCode]?.name ?? "—";
+			const pakshamName = paksham_data[pakshamCode]?.name ?? "—";
 
 			const extras = {
-  			varsham: lookupName(VARSHAM_DATA, varshamCode),
-  			masam:   lookupName(MASAM_DATA, masamCode),
-  			paksham: lookupName(PAKSHAM_DATA, pakshamCode),
-  			ruthu:   lookupName(RUTHU_DATA, ruthuCode)
+  			varsham: varshamName,
+  			masam:   masamName,
+  			paksham: pakshamName,
+  			ruthu:   ruthuName
 			};
 
 
