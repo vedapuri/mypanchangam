@@ -388,9 +388,20 @@ const CURRENT_DAY_INFO = {
   traditional: weekdayTradName
 };
 
+const formattedDateTime = nowLocal.toLocaleString("en-US", {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  hour: "numeric",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: true
+});
+
 // Display current time
 document.getElementById("nowTime").innerHTML =
-  `<b>Current date & time:</b> ${nowLocal.toLocaleString()}`;
+  `<b>Current date & time:</b> ${formattedDateTime}`;
 
 // Debug version stamp
 document.getElementById("version").textContent =
