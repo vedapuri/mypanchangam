@@ -442,7 +442,7 @@ async function loadAll(nowUTC) {
 }
 
 
-async function loadElementData(def_element,nowUTC) {
+async function loadElementData(def_element, nowUTC) {
 
   const response = await fetch(def_element.csv + "?v=" + Date.now());
   const text = await response.text();
@@ -458,52 +458,60 @@ async function loadElementData(def_element,nowUTC) {
     const toUTC   = parseUTC(cols, idx, def_element.toPrefix);
 
     if (nowUTC >= fromUTC && nowUTC < toUTC) {
+
       const code = cols[idx(def_element.codeColumn)];
       const info = def_element.mapping[code] ?? {};
       const name = info.name ?? code;
       const previous = info.previous ?? "—";
       const next = info.next ?? "—";
 
-      const elapsedMs = nowUTC - fromUTC;
+      const elapsedMs   = nowUTC - fromUTC;
       const remainingMs = toUTC - nowUTC;
+
       const pieColors = ELEMENT_COLORS[def_element.key] || {
         elapsed: "#FFB6C1",
-        remaining: "#e0e0e0"};
+        remaining: "#e0e0e0"
+      };
+
+      // -------------------------------
+      // Resolve extra lookups (generic)
+      // -------------------------------
       let resolvedExtras = null;
 
-     if (def_element.extraLookups) {
+      if (def_element.extraLookups) {
         resolvedExtras = {};
 
         for (const [key, cfg] of Object.entries(def_element.extraLookups)) {
           const colIdx = idx(cfg.column);
-          const code = colIdx !== -1 ? cols[colIdx] : null;
+          const lookupCode = colIdx !== -1 ? cols[colIdx] : null;
+          const dictEntry = lookupCode && cfg.dictionary[lookupCode];
 
-          const dictEntry = code && cfg.dictionary[code];
-
-                resolvedExtras[key] = {
-                  code,
-                  name: dictEntry?.name ?? code ?? "—",
-                  previous: dictEntry?.previous ?? "—",
-                  next: dictEntry?.next ?? "—"
+          resolvedExtras[key] = {
+            code: lookupCode,
+            name: dictEntry?.name ?? lookupCode ?? "—",
+            previous: dictEntry?.previous ?? "—",
+            next: dictEntry?.next ?? "—"
           };
         }
       }
-		if (def_element.key === "thithi" && resolvedExtras) {
-  				renderThithiExtras({
-    			varsham: resolvedExtras.varsham?.name ?? "—",
-    			masam:   resolvedExtras.masam?.name ?? "—",
-    			paksham: resolvedExtras.paksham?.name ?? "—",
-    			ruthu:   resolvedExtras.ruthu?.name ?? "—",
-    			weekday: CURRENT_DAY_INFO.weekday,
-    			weekdayTrad: CURRENT_DAY_INFO.traditional
-  			});
-}
 
+      // -------------------------------
+      // Thithi-only extras rendering
+      // -------------------------------
+      if (def_element.key === "thithi" && resolvedExtras) {
+        renderThithiExtras({
+          varsham:  resolvedExtras.varsham?.name ?? "—",
+          masam:    resolvedExtras.masam?.name ?? "—",
+          paksham:  resolvedExtras.paksham?.name ?? "—",
+          ruthu:    resolvedExtras.ruthu?.name ?? "—",
+          weekday:  CURRENT_DAY_INFO.weekday,
+          weekdayTrad: CURRENT_DAY_INFO.traditional
+        });
+      }
 
-  			renderThithiExtras(extras);
-			}
-
-
+      // -------------------------------
+      // Main block rendering (unchanged)
+      // -------------------------------
       renderElementBlock({
         title: def_element.title,
         name,
@@ -514,17 +522,19 @@ async function loadElementData(def_element,nowUTC) {
         elapsedMs,
         remainingMs,
         canvasId: def_element.canvasId,
-        pieLabel: def_element.pieLabel, 
+        pieLabel: def_element.pieLabel,
         containerId: def_element.containerId,
-        elapsedColor: pieColors.elapsed,       
-        remainingColor: pieColors.remaining    
+        elapsedColor: pieColors.elapsed,
+        remainingColor: pieColors.remaining
       });
 
       return;
     }
   }
 
-  // --- No matching record ---
+  // -------------------------------
+  // No matching record
+  // -------------------------------
   const container = document.getElementById(def_element.containerId);
   if (container) {
     container.innerHTML = `<b>${def_element.title}</b><br><br>No matching record for current time.`;
