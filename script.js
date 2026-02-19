@@ -378,6 +378,15 @@ BHA: {name: "Apabharani", previous: "Ashwini", next: "Krutthika"}    },
 const nowLocal = new Date();
 nowLocal.setSeconds(0, 0);        // normalize seconds
 const nowUTC = nowLocal.getTime();
+const weekdayName = nowLocal.toLocaleDateString("en-US", {
+  weekday: "long"
+});
+const weekdayInfo = day_of_week_data[weekdayName];
+const weekdayTradName = weekdayInfo?.name ?? "—";
+const CURRENT_DAY_INFO = {
+  weekday: weekdayName,
+  traditional: weekdayTradName
+};
 
 // Display current time
 document.getElementById("nowTime").innerHTML =
@@ -480,10 +489,14 @@ async function loadElementData(def_element,nowUTC) {
 			const pakshamName = paksham_data[pakshamCode]?.name ?? "—";
 
 			const extras = {
-  			varsham: varshamName,
-  			masam:   masamName,
-  			paksham: pakshamName,
-  			ruthu:   ruthuName
+  				varsham: varshamName,
+  				masam:   masamName,
+  				paksham: pakshamName,
+  				ruthu:   ruthuName,
+  				weekday: CURRENT_DAY_INFO.weekday,
+  				weekdayTrad: CURRENT_DAY_INFO.traditional
+};
+
 			};
 
 
@@ -528,13 +541,15 @@ function renderThithiExtras(data) {
   const container = document.getElementById("thithiExtras");
   if (!container) return;
 
-  	container.innerHTML = `
-    	Varsham: ${data.varsham}<br>
-    	Ruthu: ${data.ruthu}<br>
-		Masam: ${data.masam}<br>
-    	Paksham: ${data.paksham}<br>
-	`;
+  container.innerHTML = `
+    Varsham: ${data.varsham}<br>
+    Ruthu: ${data.ruthu}<br>
+    Masam: ${data.masam}<br>
+    Paksham: ${data.paksham}<br>
+    Vaasaram: ${data.weekdayTrad}<br>
+  `;
 }
+
 
 function parseUTC(cols, idx, prefix) {
   const d = cols[idx(prefix + "_date")];
