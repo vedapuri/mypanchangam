@@ -488,15 +488,17 @@ async function loadElementData(def_element,nowUTC) {
           };
         }
       }
-		if (def_element.key === "thithi") {
-  			const extras = {
-    			varsham: varshamName,
-    			masam:   masamName,
-    			paksham: pakshamName,
-    			ruthu:   ruthuName,
+		if (def_element.key === "thithi" && resolvedExtras) {
+  				renderThithiExtras({
+    			varsham: resolvedExtras.varsham?.name ?? "—",
+    			masam:   resolvedExtras.masam?.name ?? "—",
+    			paksham: resolvedExtras.paksham?.name ?? "—",
+    			ruthu:   resolvedExtras.ruthu?.name ?? "—",
     			weekday: CURRENT_DAY_INFO.weekday,
     			weekdayTrad: CURRENT_DAY_INFO.traditional
-  					};
+  			});
+}
+
 
   			renderThithiExtras(extras);
 			}
