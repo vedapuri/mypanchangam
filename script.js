@@ -1,4 +1,43 @@
+const OS_CONFIG = {
+  csv: "os_data.csv",
 
+  lookups: [
+    {
+      key: "varsham",
+      column: "os_varsham_code",
+      dict: varshamData
+    },
+    {
+      key: "ayanam",
+      column: "os_ayanam_code",
+      dict: ayanamData
+    },
+    {
+      key: "ruthu",
+      column: "os_ruthu_code",
+      dict: ruthuData
+    },
+    {
+      key: "masam",
+      column: "os_masam_code",
+      dict: masamData
+    }
+  ],
+
+  timeRange: {
+    start: {
+      date: "os_start_date",
+      hour: "os_start_hour",
+      minute: "os_start_mins"
+    },
+    end: {
+      date: "os_end_date",
+      hour: "os_end_hour",
+      minute: "os_end_mins"
+    },
+    timezone: "UTC"
+  }
+};
 const varsham_data = {
   PBV: {name: "Prabhava",previous: "Akshaya",next: "Vibhava"},
   VBV: {name: "Vibhava",previous: "Prabhava",next: "Shukla"},
