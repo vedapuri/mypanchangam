@@ -1,26 +1,139 @@
+const osvarshamData = {
+  PBV: {name: "Prabhava",previous: "Akshaya",next: "Vibhava"},
+  VBV: {name: "Vibhava",previous: "Prabhava",next: "Shukla"},
+  SHU: {name: "Shukla",previous: "Vibhava",next: "Pramodutha"},
+  PMD: {name: "Pramodutha",previous: "Shukla",next: "Prajotpatthi"},
+  PJP: {name: "Prajotpatthi",previous: "Pramodutha",next: "Aangirasa"}, 
+
+  AAN: {name: "Aangirasa",previous: "Prajotpatthi",next: "Shrimukha"},
+  SMK: {name: "Shrimukha",previous: "Aangirasa",next: "Bhava"},
+  BHV: {name: "Bhava",previous: "Shrimukha",next: "Yuva"},
+  YUV: {name: "Yuva",previous: "Bhava",next: "Dhathu"},
+  DHT: {name: "Dhathu",previous: "Yuva",next: "Eashwara"},
+
+  EAS: {name: "Eashwara",previous: "Dhathu",next: "Bahudhanya"},
+  BDY: {name: "Bahudhanya",previous: "Eashwara",next: "Pramadhi"},
+  PMA: {name: "Pramadhi",previous: "Bahudhanya",next: "Vikrama"},
+  VKM: {name: "Vikrama",previous: "Pramadhi",next: "Vishu"},
+  VSH: {name: "Vishu",previous: "Vikrama",next: "Chitrabhanu"},
+
+  CBH: {name: "Chitrabhanu",previous: "Vishu",next: "Swabhanu"},
+  SBH: {name: "Swabhanu",previous: "Chitrabhanu",next: "Dharana"},
+  DHA: {name: "Dharana",previous: "Swabhanu",next: "Paarthiva"},
+  PAA: {name: "Paarthiva",previous: "Dharana",next: "Vyaya"},
+  VIY: {name: "Vyaya",previous: "Paarthiva",next: "Sarvajit"},
+
+  SVJ: {name: "Sarvajit",previous: "Vyaya",next: "Sarvadhari"},
+  SVD: {name: "Sarvadhari",previous: "Sarvajit",next: "Virodhi"},
+  VRD: {name: "Virodhi",previous: "Sarvadhari",next: "Vikruthi"},
+  VKT: {name: "Vikruthi",previous: "Virodhi",next: "Kara"},
+  KAR: {name: "Kara",previous: "Vikruthi",next: "Nandana"},
+
+  NAN: {name: "Nandana",previous: "Kara",next: "Vijaya"},
+  VIJ: {name: "Vijaya",previous: "Nandana",next: "Jaya"},
+  JAY: {name: "Jaya",previous: "Vijaya",next: "Manmatha"},
+  MAN: {name: "Manmatha",previous: "Jaya",next: "Dhurmukhi"},
+  DRM: {name: "Dhurmukhi",previous: "Manmatha",next: "Heyvilambi"},
+
+  HEY: {name: "Heyvilambi",previous: "Dhurmukhi",next: "Vilambi"},
+  VIL: {name: "Vilambi",previous: "Heyvilambi",next: "Vikari"},
+  VKR: {name: "Vikari",previous: "Vilambi",next: "Shaarvari"},
+  SHA: {name: "Shaarvari",previous: "Vikari",next: "Plava"},
+  PLA: {name: "Plava",previous: "Shaarvari",next: "Shubhakruth"},
+
+  SBK: {name: "Shubhakruth",previous: "Plava",next: "Shobhakruth"},
+  SHB: {name: "Shobhakruth",previous: "Shubhakruth",next: "Krodhi"},
+  KRD: {name: "Krodhi",previous: "Shobhakruth",next: "Vishwavasu"},
+  VWV: {name: "Vishwavasu",previous: "Krodhi",next: "Paraabhava"},
+  PAR: {name: "Paraabhava",previous: "Vishwavasu",next: "Plavanga"},
+
+  PVG: {name: "Plavanga",previous: "Paraabhava",next: "Keelaka"},
+  KLK: {name: "Keelaka",previous: "Plavanga",next: "Sowmya"},
+  SOW: {name: "Sowmya",previous: "Keelaka",next: "Saadhaarana"},
+  SAD: {name: "Saadhaarana",previous: "Sowmya",next: "Virodhikruthi"},
+  VDK: {name: "Virodhikruthi",previous: "Saadhaarana",next: "Paritaapi"},
+
+  PTP: {name: "Paritaapi",previous: "Virodhikruthi",next: "Pramadhicha"},
+  PMC: {name: "Pramadhicha",previous: "Paritaapi",next: "Aananda"},
+  ANA: {name: "Aananda",previous: "Pramadhicha",next: "Raakshasa"},
+  RAK: {name: "Raakshasa",previous: "Aananda",next: "Nala"},
+  NAL: {name: "Nala",previous: "Raakshasa",next: "Pingala"},
+
+  PIN: {name: "Pingala",previous: "Nala",next: "Kaalayukthi"},
+  KAA: {name: "Kaalayukthi",previous: "Pingala",next: "Siddhaarthi"},
+  SID: {name: "Siddhaarthi",previous: "Kaalayukthi",next: "Raudhri"},
+  RAU: {name: "Raudhri",previous: "Siddhaarthi",next: "Dhurmathi"},
+  DHU: {name: "Dhurmathi",previous: "Raudhri",next: "Dhundhubi"},
+
+  DHN: {name: "Dhundhubi",previous: "Dhurmathi",next: "Rudraotkaari"},
+  RUD: {name: "Rudraotkaari",previous: "Dhundhubi",next: "Raktaakshi"},
+  RKT: {name: "Raktaakshi",previous: "Rudraotkaari",next: "Krodhana"},
+  KRO: {name: "Krodhana",previous: "Raktaakshi",next: "Akshaya"},
+  AKS: {name: "Akshaya",previous: "Krodhana",next: "Prabhava"}
+};
+
+
+
+const osayanamData = {
+  UTT: {
+    name: "Uttaraayanam",
+    previous: "Dakshinaayanam",
+    next: "Dakshinaayanam"
+  },
+  DAK: {
+    name: "Dakshinaayanam",
+    previous: "Uttaraayanam",
+    next: "Uttaraayanam"
+  }
+};
+
+const osruthuData = {
+  VAS: {name: "Vasantha", previous: "Shishira", next: "Greeshma"},
+  GRE: {name: "Greeshma", previous: "Vasantha", next: "Varsha"},
+  VAR: {name: "Varsha", previous: "Greeshma", next: "Sharad"},
+  SHA: {name: "Sharad", previous: "Varsha", next: "Hemantha"},
+  HEM: {name: "Hemantha", previous: "Sharad", next: "Shishira"},
+  SHI: {name: "Shishira", previous: "Hemantha", next: "Vasantha"}    
+};
+
+const osmasamData = {
+MES: {name: "Mesham"},
+VRU: {name: "Vrushabham"},
+MIT: {name: "Mithunam"},
+KTK: {name: "Katakam"},
+SIM: {name: "Simham"},
+KNY: {name: "Kanya"},
+TUL: {name: "Tulam"},
+VCH: {name: "Vrushchikam"},
+DHA: {name: "Dhanus"},
+MAK: {name: "Makaram"},
+KUM: {name: "Kumbham"},
+MNM: {name: "Meenum"}
+};
+
 const OS_CONFIG = {
-  csv: "os_data.csv",
+  csv: "sowramanam_data.csv",
 
   lookups: [
     {
       key: "varsham",
       column: "os_varsham_code",
-      dict: varshamData
+      dict: osvarshamData
     },
     {
       key: "ayanam",
       column: "os_ayanam_code",
-      dict: ayanamData
+      dict: osayanamData
     },
     {
       key: "ruthu",
       column: "os_ruthu_code",
-      dict: ruthuData
+      dict: osruthuData
     },
     {
       key: "masam",
       column: "os_masam_code",
-      dict: masamData
+      dict: osmasamData
     }
   ],
 
@@ -538,7 +651,8 @@ async function loadElementData(def_element, nowUTC) {
       // Thithi-only extras rendering
       // -------------------------------
       if (def_element.key === "thithi" && resolvedExtras) {
-        renderThithiExtras({
+          await loadsowramanamExtras();   // ← NEW, runs first
+          renderThithiExtras({
           varsham:  resolvedExtras.varsham?.name ?? "—",
           masam:    resolvedExtras.masam?.name ?? "—",
           paksham:  resolvedExtras.paksham?.name ?? "—",
@@ -579,8 +693,34 @@ async function loadElementData(def_element, nowUTC) {
     container.innerHTML = `<b>${def_element.title}</b><br><br>No matching record for current time.`;
   }
 }
+// Loading os data
+async function loadsowramanamExtras() {
+  const response = await fetch(sowramanam_data.csv + "?v=" + Date.now());
+  const text = await response.text();
+  const lines = text.trim().split("\n");
 
+  const headers = lines[0].split(",").map(h => h.trim());
+  const idx = name => headers.indexOf(name);
 
+  // assume single active row
+  const cols = lines[1].split(",");
+
+  const result = {};
+
+  for (const cfg of XXX_CONFIG.columns) {
+    const colIdx = idx(cfg.column);
+    const code = colIdx !== -1 ? cols[colIdx] : null;
+    const entry = code && cfg.dict[code];
+
+    result[cfg.key] = {
+      code,
+      name: entry?.name ?? "—",
+      desc: entry?.desc ?? ""
+    };
+  }
+
+  renderaowramanamExtras(result);
+}
 /***********************
  * HELPERS
  ***********************/
@@ -655,7 +795,21 @@ function renderElementBlock({
   remainingColor);
 }
 
+// render sowramanam extras
+function renderaowramanamExtras(data) {
+  const container = document.getElementById("sowramanamExtras");
+  if (!container) return;
 
+  container.innerHTML = `
+    <b>Additional Details</b><br><br>
+    ${Object.values(data).map(d => `
+      <div>
+        <b>${d.name}</b>
+        ${d.desc ? ` – ${d.desc}` : ""}
+      </div>
+    `).join("")}
+  `;
+}
 
 /***********************
  * PIE CHART
