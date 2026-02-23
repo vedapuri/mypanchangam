@@ -97,18 +97,18 @@ const osruthuData = {
 };
 
 const osmasamData = {
-MES: {name: "Mesham"},
-VRU: {name: "Vrushabham"},
-MIT: {name: "Mithunam"},
-KTK: {name: "Katakam"},
-SIM: {name: "Simham"},
-KNY: {name: "Kanya"},
-TUL: {name: "Tulam"},
-VCH: {name: "Vrushchikam"},
-DHA: {name: "Dhanus"},
-MAK: {name: "Makaram"},
-KUM: {name: "Kumbham"},
-MNM: {name: "Meenum"}
+MES: {name: "Mesham",previous="Meenum", next="Vrushabham"},
+VRU: {name: "Vrushabham",previous="Mesham", next="Mithunam"},
+MIT: {name: "Mithunam",previous="Vrushabham", next="Katakam"},
+KTK: {name: "Katakam",previous="Mithunam", next="Simham"},
+SIM: {name: "Simham",previous="Katakam", next="Kanya"},
+KNY: {name: "Kanya",previous="Simham", next="Tulam"},
+TUL: {name: "Tulam",previous="Kanya", next="Vrushchikam"},
+VCH: {name: "Vrushchikam",previous="Tulam", next="Dhanus"},
+DHA: {name: "Dhanus",previous="Vrushchikam", next="Makaram"},
+MAK: {name: "Makaram",previous="Dhanus", next="Kumbham"},
+KUM: {name: "Kumbham",previous="Makaram", next="Meenum"},
+MNM: {name: "Meenum",previous="Kumbham", next="Mesham"}
 };
 
 const OS_CONFIG = {
@@ -137,19 +137,8 @@ const OS_CONFIG = {
     }
   ],
 
-  timeRange: {
-    start: {
-      date: "os_start_date",
-      hour: "os_start_hour",
-      minute: "os_start_mins"
-    },
-    end: {
-      date: "os_end_date",
-      hour: "os_end_hour",
-      minute: "os_end_mins"
-    },
-    timezone: "UTC"
-  }
+    fromPrefix: "os_start",
+    toPrefix: "os_end"
 };
 const varsham_data = {
   PBV: {name: "Prabhava",previous: "Akshaya",next: "Vibhava"},
@@ -652,7 +641,6 @@ async function loadElementData(def_element, nowUTC) {
       // Thithi-only extras rendering
       // -------------------------------
       if (def_element.key === "thithi" && resolvedExtras) {
-          await loadsowramanamExtras();   // ← NEW, runs first
           renderThithiExtras({
           varsham:  resolvedExtras.varsham?.name ?? "—",
           masam:    resolvedExtras.masam?.name ?? "—",
@@ -706,9 +694,9 @@ async function loadsowramanamExtras(nowUTC) {
   for (const line of lines.slice(1)) {
     const cols = line.split(",");
 
-    const fromUTC = parseUTC(cols, idx, "os_start");
-    const toUTC   = parseUTC(cols, idx, "os_end");
-
+    const fromUTC = parseUTC(cols, idx, OS_CONFIG.fromPrefix);
+    const toUTC   = parseUTC(cols, idx, OS_CONFIG.toPrefix);
+    
     if (nowUTC >= fromUTC && nowUTC < toUTC) {
 
       const result = {};
