@@ -97,18 +97,18 @@ const osruthuData = {
 };
 
 const osmasamData = {
-MES: {name: "Mesham",previous="Meenum", next="Vrushabham"},
-VRU: {name: "Vrushabham",previous="Mesham", next="Mithunam"},
-MIT: {name: "Mithunam",previous="Vrushabham", next="Katakam"},
-KTK: {name: "Katakam",previous="Mithunam", next="Simham"},
-SIM: {name: "Simham",previous="Katakam", next="Kanya"},
-KNY: {name: "Kanya",previous="Simham", next="Tulam"},
-TUL: {name: "Tulam",previous="Kanya", next="Vrushchikam"},
-VCH: {name: "Vrushchikam",previous="Tulam", next="Dhanus"},
-DHA: {name: "Dhanus",previous="Vrushchikam", next="Makaram"},
-MAK: {name: "Makaram",previous="Dhanus", next="Kumbham"},
-KUM: {name: "Kumbham",previous="Makaram", next="Meenum"},
-MNM: {name: "Meenum",previous="Kumbham", next="Mesham"}
+MES: {name: "Mesham",previous: "Meenum", next: "Vrushabham"},
+VRU: {name: "Vrushabham",previous: "Mesham", next: "Mithunam"},
+MIT: {name: "Mithunam",previous: "Vrushabham", next: "Katakam"},
+KTK: {name: "Katakam",previous: "Mithunam", next: "Simham"},
+SIM: {name: "Simham",previous: "Katakam", next: "Kanya"},
+KNY: {name: "Kanya",previous: "Simham", next: "Tulam"},
+TUL: {name: "Tulam",previous: "Kanya", next: "Vrushchikam"},
+VCH: {name: "Vrushchikam",previous: "Tulam", next: "Dhanus"},
+DHA: {name: "Dhanus",previous: "Vrushchikam", next: "Makaram"},
+MAK: {name: "Makaram",previous: "Dhanus", next: "Kumbham"},
+KUM: {name: "Kumbham",previous: "Makaram", next: "Meenum"},
+MNM: {name: "Meenum",previous: "Kumbham", next: "Mesham"}
 };
 
 const OS_CONFIG = {
@@ -724,9 +724,7 @@ async function loadsowramanamExtras(nowUTC) {
 /***********************
  * HELPERS
  ***********************/
-function lookupName(dict, code) {
-  return dict?.[code]?.name ?? code ?? "—";
-}
+
 function renderThithiExtras(data) {
   const container = document.getElementById("thithiExtras");
   if (!container) return;
