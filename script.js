@@ -14,35 +14,7 @@ KUM: {name: "Kumbham",previous: "Makaram", next: "Meenum"},
 MNM: {name: "Meenum",previous: "Kumbham", next: "Mesham"}
 };
 
-const OS_CONFIG = {
-  csv: "sowramanam_data.csv",
 
-  lookups: [
-    {
-      key: "varsham",
-      column: "os_varsham_code",
-      dict: varsham_data
-    },
-    {
-      key: "ayanam",
-      column: "os_ayanam_code",
-      dict: ayanam_data
-    },
-    {
-      key: "ruthu",
-      column: "os_ruthu_code",
-      dict: ruthu_data
-    },
-    {
-      key: "masam",
-      column: "os_masam_code",
-      dict: osmasamData
-    }
-  ],
-
-    fromPrefix: "os_start",
-    toPrefix: "os_end"
-};
 const varsham_data = {
   PBV: {name: "Prabhava",previous: "Akshaya",next: "Vibhava"},
   VBV: {name: "Vibhava",previous: "Prabhava",next: "Shukla"},
@@ -209,6 +181,35 @@ const ELEMENT_COLORS = {
 
 const COLOR_CSV = "data_all_colours.csv";
 
+const OS_CONFIG = {
+  csv: "sowramanam_data.csv",
+
+  lookups: [
+    {
+      key: "varsham",
+      column: "os_varsham_code",
+      dict: varsham_data
+    },
+    {
+      key: "ayanam",
+      column: "os_ayanam_code",
+      dict: ayanam_data
+    },
+    {
+      key: "ruthu",
+      column: "os_ruthu_code",
+      dict: ruthu_data
+    },
+    {
+      key: "masam",
+      column: "os_masam_code",
+      dict: osmasamData
+    }
+  ],
+
+    fromPrefix: "os_start",
+    toPrefix: "os_end"
+};
 /***********************
  * ELEMENT DEFINITIONS
  ***********************/
