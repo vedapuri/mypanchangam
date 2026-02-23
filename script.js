@@ -417,7 +417,7 @@ BHA: {name: "Apabharani", previous: "Ashwini", next: "Krutthika"}    },
 };
 
 
-
+const CACHE_BUSTER = "?v=" + Date.now();
 // ---- GLOBAL TIME SETUP (runs once) ----
 const nowLocal = new Date();
 nowLocal.setSeconds(0, 0);        // normalize seconds
@@ -457,7 +457,7 @@ document.getElementById("version").textContent =
  ***********************/
 
 async function loadElementColors() {
-  const response = await fetch(COLOR_CSV + "?v=" + Date.now());
+  const response = await fetch(COLOR_CSV + CACHE_BUSTER);
   const text = await response.text();
   const lines = text.trim().split("\n");
 
@@ -489,7 +489,7 @@ async function loadAll(nowUTC) {
 
 async function loadElementData(def_element, nowUTC) {
 
-  const response = await fetch(def_element.csv + "?v=" + Date.now());
+  const response = await fetch(def_element.csv + CACHE_BUSTER);
   const text = await response.text();
   const lines = text.trim().split("\n");
 
@@ -502,21 +502,22 @@ async function loadElementData(def_element, nowUTC) {
     const fromUTC = parseUTC(cols, idx, def_element.fromPrefix);
     const toUTC   = parseUTC(cols, idx, def_element.toPrefix);
 
-    if (nowUTC >= fromUTC && nowUTC < toUTC) {
+    if (!fromUTC || !toUTC) continue;
+      if (nowUTC >= fromUTC && nowUTC < toUTC) {
 
-      const code = cols[idx(def_element.codeColumn)];
-      const info = def_element.mapping[code] ?? {};
-      const name = info.name ?? code;
-      const previous = info.previous ?? "—";
-      const next = info.next ?? "—";
+        const code = cols[idx(def_element.codeColumn)];
+        const info = def_element.mapping[code] ?? {};
+        const name = info.name ?? code;
+        const previous = info.previous ?? "—";
+        const next = info.next ?? "—";
 
-      const elapsedMs   = nowUTC - fromUTC;
-      const remainingMs = toUTC - nowUTC;
+        const elapsedMs   = nowUTC - fromUTC;
+        const remainingMs = toUTC - nowUTC;
 
-      const pieColors = ELEMENT_COLORS[def_element.key] || {
-        elapsed: "#FFB6C1",
-        remaining: "#e0e0e0"
-      };
+        const pieColors = ELEMENT_COLORS[def_element.key] || {
+          elapsed: "#FFB6C1",
+          remaining: "#e0e0e0"
+        };
 
       // -------------------------------
       // Resolve extra lookups (generic)
@@ -587,7 +588,7 @@ async function loadElementData(def_element, nowUTC) {
 }
 // Loading os data
 async function loadsowramanamExtras(nowUTC) {
-  const response = await fetch(OS_CONFIG.csv + "?v=" + Date.now());
+  const response = await fetch(OS_CONFIG.csv + CACHE_BUSTER);
   const text = await response.text();
   const lines = text.trim().split("\n");
 
@@ -600,21 +601,22 @@ async function loadsowramanamExtras(nowUTC) {
     const fromUTC = parseUTC(cols, idx, OS_CONFIG.fromPrefix);
     const toUTC   = parseUTC(cols, idx, OS_CONFIG.toPrefix);
     
-    if (nowUTC >= fromUTC && nowUTC < toUTC) {
+    if (!fromUTC || !toUTC) continue;
+      if (nowUTC >= fromUTC && nowUTC < toUTC) {
 
-      const result = {};
+        const result = {};
 
-      for (const cfg of OS_CONFIG.lookups) {
-        const colIdx = idx(cfg.column);
-        const code = colIdx !== -1 ? cols[colIdx] : null;
-        const entry = code && cfg.dict[code];
+        for (const cfg of OS_CONFIG.lookups) {
+          const colIdx = idx(cfg.column);
+          const code = colIdx !== -1 ? cols[colIdx] : null;
+          const entry = code && cfg.dict[code];
 
-        result[cfg.key] = {
-          code,
-          name: entry?.name ?? "—",
-          previous: entry?.previous ?? "—",
-          next: entry?.next ?? "—"
-        };
+          result[cfg.key] = {
+            code,
+            name: entry?.name ?? "—",
+            previous: entry?.previous ?? "—",
+            next: entry?.next ?? "—"
+          };
       }
 
       renderSowramanamExtras(result);
@@ -643,15 +645,24 @@ function renderThithiExtras(data) {
 
 
 function parseUTC(cols, idx, prefix) {
-  const d = cols[idx(prefix + "_date")];
-  const hh = cols[idx(prefix + "_hour")].padStart(2, "0");
-  const mm = cols[idx(prefix + "_mins")].padStart(2, "0");
+  const dateIdx = idx(prefix + "_date");
+  const hourIdx = idx(prefix + "_hour");
+  const minIdx  = idx(prefix + "_mins");
+
+  if (dateIdx === -1 || hourIdx === -1 || minIdx === -1) {
+    return null;
+  }
+
+  const d = cols[dateIdx];
+  const hh = cols[hourIdx]?.padStart(2, "0");
+  const mm = cols[minIdx]?.padStart(2, "0");
+
+  if (!d) return null;
 
   return Date.parse(
     `${d.slice(0,4)}-${d.slice(4,6)}-${d.slice(6,8)}T${hh}:${mm}:00Z`
   );
 }
-
 function formatDuration(ms) {
   const totalMinutes = Math.floor(ms / 60000);
   const hours = Math.floor(totalMinutes / 60);
@@ -729,7 +740,6 @@ function drawTimePie(
   const total = elapsedMs + remainingMs;
   if (total <= 0) return;
 
-  const totalMs = elapsedMs + remainingMs;
   const fraction = elapsedMs / total;
 
 // --- Geometry ---
