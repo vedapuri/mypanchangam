@@ -502,7 +502,7 @@ async function loadElementData(def_element, nowUTC) {
     const fromUTC = parseUTC(cols, idx, def_element.fromPrefix);
     const toUTC   = parseUTC(cols, idx, def_element.toPrefix);
 
-    if (!fromUTC || !toUTC) continue;
+    if (fromUTC == null || toUTC == null) continue;
       if (nowUTC >= fromUTC && nowUTC < toUTC) {
 
         const code = cols[idx(def_element.codeColumn)];
@@ -601,7 +601,7 @@ async function loadsowramanamExtras(nowUTC) {
     const fromUTC = parseUTC(cols, idx, OS_CONFIG.fromPrefix);
     const toUTC   = parseUTC(cols, idx, OS_CONFIG.toPrefix);
     
-    if (!fromUTC || !toUTC) continue;
+    if (fromUTC == null || toUTC == null) continue;
       if (nowUTC >= fromUTC && nowUTC < toUTC) {
 
         const result = {};
