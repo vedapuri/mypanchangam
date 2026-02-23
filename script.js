@@ -587,6 +587,7 @@ async function loadElementColors() {
 
 async function loadAll(nowUTC) {
   await loadElementColors();
+  await loadsowramanamExtras(nowUTC);  
   await loadElementData(ELEMENT_DEFINITIONS.thithi, nowUTC);
   await loadElementData(ELEMENT_DEFINITIONS.nakshatram, nowUTC);
   await loadElementData(ELEMENT_DEFINITIONS.yogam, nowUTC);
@@ -694,33 +695,44 @@ async function loadElementData(def_element, nowUTC) {
   }
 }
 // Loading os data
-async function loadsowramanamExtras() {
-  const response = await fetch(sowramanam_data.csv + "?v=" + Date.now());
+async function loadsowramanamExtras(nowUTC) {
+  const response = await fetch(OS_CONFIG.csv + "?v=" + Date.now());
   const text = await response.text();
   const lines = text.trim().split("\n");
 
   const headers = lines[0].split(",").map(h => h.trim());
   const idx = name => headers.indexOf(name);
 
-  // assume single active row
-  const cols = lines[1].split(",");
+  for (const line of lines.slice(1)) {
+    const cols = line.split(",");
 
-  const result = {};
+    const fromUTC = parseUTC(cols, idx, "os_start");
+    const toUTC   = parseUTC(cols, idx, "os_end");
 
-  for (const cfg of XXX_CONFIG.columns) {
-    const colIdx = idx(cfg.column);
-    const code = colIdx !== -1 ? cols[colIdx] : null;
-    const entry = code && cfg.dict[code];
+    if (nowUTC >= fromUTC && nowUTC < toUTC) {
 
-    result[cfg.key] = {
-      code,
-      name: entry?.name ?? "—",
-      desc: entry?.desc ?? ""
-    };
+      const result = {};
+
+      for (const cfg of OS_CONFIG.lookups) {
+        const colIdx = idx(cfg.column);
+        const code = colIdx !== -1 ? cols[colIdx] : null;
+        const entry = code && cfg.dict[code];
+
+        result[cfg.key] = {
+          code,
+          name: entry?.name ?? "—",
+          previous: entry?.previous ?? "—",
+          next: entry?.next ?? "—"
+        };
+      }
+
+      renderSowramanamExtras(result);
+      return;
+    }
   }
-
-  renderaowramanamExtras(result);
 }
+
+
 /***********************
  * HELPERS
  ***********************/
@@ -796,18 +808,16 @@ function renderElementBlock({
 }
 
 // render sowramanam extras
-function renderaowramanamExtras(data) {
+function renderSowramanamExtras(data) {
   const container = document.getElementById("sowramanamExtras");
   if (!container) return;
 
   container.innerHTML = `
-    <b>Additional Details</b><br><br>
-    ${Object.values(data).map(d => `
-      <div>
-        <b>${d.name}</b>
-        ${d.desc ? ` – ${d.desc}` : ""}
-      </div>
-    `).join("")}
+    <b>Sowramanam</b><br><br>
+    Varsham: ${data.varsham?.name ?? "—"}<br>
+    Ayanam: ${data.ayanam?.name ?? "—"}<br>
+    Ruthu: ${data.ruthu?.name ?? "—"}<br>
+    Masam: ${data.masam?.name ?? "—"}<br>
   `;
 }
 
