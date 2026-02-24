@@ -628,7 +628,7 @@ async function loadsowramanamExtras(nowUTC) {
 
 
 /***********************
- * HELPERS
+ * HELPER functions
  ***********************/
 
 function renderThithiExtras(data) {
