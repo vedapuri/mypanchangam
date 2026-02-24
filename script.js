@@ -1,4 +1,3 @@
-
 const osmasamData = {
 MES: {name: "Mesham",previous: "Meenum", next: "Vrushabham"},
 VRU: {name: "Vrushabham",previous: "Mesham", next: "Mithunam"},
