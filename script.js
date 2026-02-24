@@ -179,7 +179,7 @@ const OS_CONFIG = {
 
   lookups: [
     {
-      key: "samvatsaram",
+      key: "varsham",
       column: "os_varsham_code",
       dict: varsham_data
     },
@@ -579,7 +579,7 @@ async function loadElementData(def_element, nowUTC) {
       // -------------------------------
       if (def_element.key === "thithi" && resolvedExtras) {
           renderThithiExtras({
-          samvatsaram:  resolvedExtras.varsham?.name ?? "—",
+          varsham:  resolvedExtras.varsham?.name ?? "—",
           masam:    resolvedExtras.masam?.name ?? "—",
           paksham:  resolvedExtras.paksham?.name ?? "—",
           ruthu:    resolvedExtras.ruthu?.name ?? "—",
@@ -631,7 +631,7 @@ function renderThithiExtras(data) {
 
     container.innerHTML = `
       <strong>Chaandramaanam based data</strong><br><br>
-      Samvatsaram: ${data.samvatsaram}<br>
+      varsham: ${data.varsham}<br>
       Ruthu: ${data.ruthu}<br>
       Masam: ${data.masam}<br>
       Paksham: ${data.paksham}<br>
@@ -710,7 +710,7 @@ function renderSowramanamExtras(data) {
 
     container.innerHTML = `
       <strong>Sowramaanam based data</strong><br><br>
-      Samvatsaram: ${data.samvatsaram?.name ?? "—"}<br>
+      Varsham: ${data.varsham?.name ?? "—"}<br>
       Ayanam: ${data.ayanam?.name ?? "—"}<br>
       Ruthu: ${data.ruthu?.name ?? "—"}<br>
       Masam: ${data.masam?.name ?? "—"}<br>
