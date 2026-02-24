@@ -1,19 +1,3 @@
-const osmasamData = {
-MES: {name: "Mesham",previous: "Meenum", next: "Vrushabham"},
-VRU: {name: "Vrushabham",previous: "Mesham", next: "Mithunam"},
-MIT: {name: "Mithunam",previous: "Vrushabham", next: "Katakam"},
-KTK: {name: "Katakam",previous: "Mithunam", next: "Simham"},
-SIM: {name: "Simham",previous: "Katakam", next: "Kanya"},
-KNY: {name: "Kanya",previous: "Simham", next: "Tulam"},
-TUL: {name: "Tulam",previous: "Kanya", next: "Vrushchikam"},
-VCH: {name: "Vrushchikam",previous: "Tulam", next: "Dhanus"},
-DHA: {name: "Dhanus",previous: "Vrushchikam", next: "Makaram"},
-MAK: {name: "Makaram",previous: "Dhanus", next: "Kumbham"},
-KUM: {name: "Kumbham",previous: "Makaram", next: "Meenum"},
-MNM: {name: "Meenum",previous: "Kumbham", next: "Mesham"}
-};
-
-
 const varsham_data = {
   PBV: {name: "Prabhava",previous: "Akshaya",next: "Vibhava"},
   VBV: {name: "Vibhava",previous: "Prabhava",next: "Shukla"},
@@ -136,10 +120,20 @@ KA1: {name: "Adhika Kaarthik", previous: "Aashvayuja", next: "Kaarthik"},
 MG1: {name: "Adhika Maargasheersha", previous: "Kaarthik", next: "Maargasheersha"},
 PA1: {name: "Adhika Pausha", previous: "Maargasheersha", next: "Pausha"},
 MA1: {name: "Adhika Maagha", previous: "Pausha", next: "Maagha"},
-PH1: {name: "Adhika Phaalguna", previous: "Maagha", next: "Phaalguna"}
+PH1: {name: "Adhika Phaalguna", previous: "Maagha", next: "Phaalguna"},
+MES: {name: "Mesham",previous: "Meenum", next: "Vrushabham"},
+VRU: {name: "Vrushabham",previous: "Mesham", next: "Mithunam"},
+MIT: {name: "Mithunam",previous: "Vrushabham", next: "Katakam"},
+KTK: {name: "Katakam",previous: "Mithunam", next: "Simham"},
+SIM: {name: "Simham",previous: "Katakam", next: "Kanya"},
+KNY: {name: "Kanya",previous: "Simham", next: "Tulam"},
+TUL: {name: "Tulam",previous: "Kanya", next: "Vrushchikam"},
+VCH: {name: "Vrushchikam",previous: "Tulam", next: "Dhanus"},
+DHA: {name: "Dhanus",previous: "Vrushchikam", next: "Makaram"},
+MAK: {name: "Makaram",previous: "Dhanus", next: "Kumbham"},
+KUM: {name: "Kumbham",previous: "Makaram", next: "Meenum"},
+MNM: {name: "Meenum",previous: "Kumbham", next: "Mesham"}
 };
-
-
 
 const paksham_data = {
 SHU: {name: "Shukla", previous: "Krishna", next: "Krishna"},
@@ -202,7 +196,7 @@ const OS_CONFIG = {
     {
       key: "masam",
       column: "os_masam_code",
-      dict: osmasamData
+      dict: masam_data
     }
   ],
 
