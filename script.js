@@ -179,7 +179,7 @@ const OS_CONFIG = {
 
   lookups: [
     {
-      key: "varsham",
+      key: "samvatsaram",
       column: "os_varsham_code",
       dict: varsham_data
     },
@@ -450,6 +450,15 @@ document.getElementById("version").textContent =
  * MAIN ENTRY POINT
  ***********************/
 
+
+async function loadAll(nowUTC) {
+  await loadElementColors();
+  await loadsowramanamExtras(nowUTC);  
+  await loadElementData(ELEMENT_DEFINITIONS.thithi, nowUTC);
+  await loadElementData(ELEMENT_DEFINITIONS.nakshatram, nowUTC);
+  await loadElementData(ELEMENT_DEFINITIONS.yogam, nowUTC);
+  await loadElementData(ELEMENT_DEFINITIONS.karanam, nowUTC);
+}
 async function loadElementColors() {
   const response = await fetch(COLOR_CSV + CACHE_BUSTER);
   const text = await response.text();
@@ -471,15 +480,45 @@ async function loadElementColors() {
 }
 
 
-async function loadAll(nowUTC) {
-  await loadElementColors();
-  await loadsowramanamExtras(nowUTC);  
-  await loadElementData(ELEMENT_DEFINITIONS.thithi, nowUTC);
-  await loadElementData(ELEMENT_DEFINITIONS.nakshatram, nowUTC);
-  await loadElementData(ELEMENT_DEFINITIONS.yogam, nowUTC);
-  await loadElementData(ELEMENT_DEFINITIONS.karanam, nowUTC);
-}
+// Loading os data
+async function loadsowramanamExtras(nowUTC) {
+  const response = await fetch(OS_CONFIG.csv + CACHE_BUSTER);
+  const text = await response.text();
+  const lines = text.trim().split("\n");
 
+  const headers = lines[0].split(",").map(h => h.trim());
+  const idx = name => headers.indexOf(name);
+
+  for (const line of lines.slice(1)) {
+    const cols = line.split(",");
+
+    const fromUTC = parseUTC(cols, idx, OS_CONFIG.fromPrefix);
+    const toUTC   = parseUTC(cols, idx, OS_CONFIG.toPrefix);
+    
+    if (fromUTC == null || toUTC == null) continue;
+      if (nowUTC >= fromUTC && nowUTC < toUTC) {
+
+        const result = {};
+
+        for (const cfg of OS_CONFIG.lookups) {
+          const colIdx = idx(cfg.column);
+          const code = colIdx !== -1 ? cols[colIdx] : null;
+          const entry = (code != null && code !== "") ? cfg.dict[code] : null;
+          result[cfg.key] = {
+            code,
+            name: entry?.name ?? "—",
+            previous: entry?.previous ?? "—",
+            next: entry?.next ?? "—"
+        };
+      }
+
+      renderSowramanamExtras(result);
+      await sleep(5000);  
+
+      return;
+    }
+  }
+}
 
 async function loadElementData(def_element, nowUTC) {
 
@@ -540,7 +579,7 @@ async function loadElementData(def_element, nowUTC) {
       // -------------------------------
       if (def_element.key === "thithi" && resolvedExtras) {
           renderThithiExtras({
-          varsham:  resolvedExtras.varsham?.name ?? "—",
+          samvatsaram:  resolvedExtras.varsham?.name ?? "—",
           masam:    resolvedExtras.masam?.name ?? "—",
           paksham:  resolvedExtras.paksham?.name ?? "—",
           ruthu:    resolvedExtras.ruthu?.name ?? "—",
@@ -580,45 +619,6 @@ async function loadElementData(def_element, nowUTC) {
     container.innerHTML = `<b>${def_element.title}</b><br><br>No matching record for current time.`;
   }
 }
-// Loading os data
-async function loadsowramanamExtras(nowUTC) {
-  const response = await fetch(OS_CONFIG.csv + CACHE_BUSTER);
-  const text = await response.text();
-  const lines = text.trim().split("\n");
-
-  const headers = lines[0].split(",").map(h => h.trim());
-  const idx = name => headers.indexOf(name);
-
-  for (const line of lines.slice(1)) {
-    const cols = line.split(",");
-
-    const fromUTC = parseUTC(cols, idx, OS_CONFIG.fromPrefix);
-    const toUTC   = parseUTC(cols, idx, OS_CONFIG.toPrefix);
-    
-    if (fromUTC == null || toUTC == null) continue;
-      if (nowUTC >= fromUTC && nowUTC < toUTC) {
-
-        const result = {};
-
-        for (const cfg of OS_CONFIG.lookups) {
-          const colIdx = idx(cfg.column);
-          const code = colIdx !== -1 ? cols[colIdx] : null;
-          const entry = (code != null && code !== "") ? cfg.dict[code] : null;
-          result[cfg.key] = {
-            code,
-            name: entry?.name ?? "—",
-            previous: entry?.previous ?? "—",
-            next: entry?.next ?? "—"
-        };
-      }
-
-      renderSowramanamExtras(result);
-      await sleep(5000);  
-
-      return;
-    }
-  }
-}
 
 
 /***********************
@@ -631,7 +631,7 @@ function renderThithiExtras(data) {
 
     container.innerHTML = `
       <strong>Chaandramaanam based data</strong><br><br>
-      Varsham: ${data.varsham}<br>
+      Samvatsaram: ${data.samvatsaram}<br>
       Ruthu: ${data.ruthu}<br>
       Masam: ${data.masam}<br>
       Paksham: ${data.paksham}<br>
@@ -710,7 +710,7 @@ function renderSowramanamExtras(data) {
 
     container.innerHTML = `
       <strong>Sowramaanam based data</strong><br><br>
-      Varsham: ${data.varsham?.name ?? "—"}<br>
+      Samvatsaram: ${data.samvatsaram?.name ?? "—"}<br>
       Ayanam: ${data.ayanam?.name ?? "—"}<br>
       Ruthu: ${data.ruthu?.name ?? "—"}<br>
       Masam: ${data.masam?.name ?? "—"}<br>
