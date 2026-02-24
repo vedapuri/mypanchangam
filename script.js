@@ -635,14 +635,14 @@ function renderThithiExtras(data) {
   const container = document.getElementById("thithiExtras");
   if (!container) return;
 
-  container.innerHTML = `
-    <strong>Chaandramaanam based data</strong><br><br>
-    Varsham: ${data.varsham}<br>
-    Ruthu: ${data.ruthu}<br>
-    Masam: ${data.masam}<br>
-    Paksham: ${data.paksham}<br>
-    Vaasaram: ${data.weekdayTrad}<br>
-  `;
+    container.innerHTML = `
+      <strong>Chaandramaanam based data</strong><br><br>
+      Varsham: ${data.varsham}<br>
+      Ruthu: ${data.ruthu}<br>
+      Masam: ${data.masam}<br>
+      Paksham: ${data.paksham}<br>
+      Vaasaram: ${data.weekdayTrad}<br>
+    `;
 }
 
 
@@ -695,15 +695,15 @@ function renderElementBlock({
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  container.innerHTML = `
-    <b>${title}</b><br><br>
-    <b>Name: ${name}</b><br>
-    Started at: ${fromLocal.toLocaleString()}<br>
-    Ends at: ${toLocal.toLocaleString()}<br>
-    Elapsed time: ${elapsedStr}<br>
-    <b>Remaining time: ${remainingStr}</b><br>
-    <canvas id="${canvasId}" width="450" height="400" style="margin-top:10px;"></canvas>
-  `;
+    container.innerHTML = `
+      <b>${title}</b><br><br>
+      <b>Name: ${name}</b><br>
+      Started at: ${fromLocal.toLocaleString()}<br>
+      Ends at: ${toLocal.toLocaleString()}<br>
+      Elapsed time: ${elapsedStr}<br>
+      <b>Remaining time: ${remainingStr}</b><br>
+      <canvas id="${canvasId}" width="450" height="400" style="margin-top:10px;"></canvas>
+    `;
 
   drawTimePie(canvasId, elapsedMs, remainingMs, pieLabel, elapsedColor,
   remainingColor);
@@ -714,13 +714,13 @@ function renderSowramanamExtras(data) {
   const container = document.getElementById("sowramanamExtras");
   if (!container) return;
 
-  container.innerHTML = `
-    <strong>Sowramaanam based data</strong><br><br>
-    Varsham: ${data.varsham?.name ?? "—"}<br>
-    Ayanam: ${data.ayanam?.name ?? "—"}<br>
-    Ruthu: ${data.ruthu?.name ?? "—"}<br>
-    Masam: ${data.masam?.name ?? "—"}<br>
-  `;
+    container.innerHTML = `
+      <strong>Sowramaanam based data</strong><br><br>
+      Varsham: ${data.varsham?.name ?? "—"}<br>
+      Ayanam: ${data.ayanam?.name ?? "—"}<br>
+      Ruthu: ${data.ruthu?.name ?? "—"}<br>
+      Masam: ${data.masam?.name ?? "—"}<br>
+    `;
 }
 
 /***********************
