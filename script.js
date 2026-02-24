@@ -636,6 +636,7 @@ function renderThithiExtras(data) {
   if (!container) return;
 
   container.innerHTML = `
+    <strong>Chaandramaanam based data</strong><br><br>
     Varsham: ${data.varsham}<br>
     Ruthu: ${data.ruthu}<br>
     Masam: ${data.masam}<br>
@@ -714,7 +715,7 @@ function renderSowramanamExtras(data) {
   if (!container) return;
 
   container.innerHTML = `
-    <b>Sowramanam</b><br><br>
+    <strong>Sowramaanam based data</strong><br><br>
     Varsham: ${data.varsham?.name ?? "—"}<br>
     Ayanam: ${data.ayanam?.name ?? "—"}<br>
     Ruthu: ${data.ruthu?.name ?? "—"}<br>
