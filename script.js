@@ -869,7 +869,7 @@ ctx.lineWidth = 1;
    ctx.fillStyle = "#000";
    ctx.fillText(`Remaining: ${percentRemaining}%`, x + 16, y + 9);
 
-   const elapsedPercent = (elapsedMs / totalMs) * 100; // e.g. 2.37%
+   const elapsedPercent = (elapsedMs / total) * 100; // e.g. 2.37%
    const revolutions = elapsedPercent; // 1 rev per 1%
    const angle = -Math.PI / 2 + revolutions * 2 * Math.PI;
 
