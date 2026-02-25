@@ -484,21 +484,19 @@ async function loadElementColors() {
 async function loadsowramanamExtras(nowUTC) {
   const response = await fetch(OS_CONFIG.csv + CACHE_BUSTER);
   const text = await response.text();
-  const lines = text.trim().split("\n");
-
+  const lines = text.trim().split(/\r?\n/);
   const headers = lines[0].split(",").map(h => h.trim());
   const idx = name => headers.indexOf(name);
 
   for (const line of lines.slice(1)) {
-    const cols = line.split(",");
-
+    const cols = line.split(",").map(c => c.trim().replace(/\r$/, ""));
     const fromUTC = parseUTC(cols, idx, OS_CONFIG.fromPrefix);
     const toUTC   = parseUTC(cols, idx, OS_CONFIG.toPrefix);
     console.log("Checking row:", cols, "fromUTC:", fromUTC, "toUTC:", toUTC);
     
-    if (fromUTC == null || toUTC == null) 
+    if (fromUTC == null || toUTC == null) {
       console.log("Skipping row due to null date");
-      continue;
+      continue;}
       if (nowUTC >= fromUTC && nowUTC < toUTC) {
         console.log("Matched row found:", cols);
         const result = {};
@@ -527,14 +525,13 @@ async function loadElementData(def_element, nowUTC) {
 
   const response = await fetch(def_element.csv + CACHE_BUSTER);
   const text = await response.text();
-  const lines = text.trim().split("\n");
-
+  const lines = text.trim().split(/\r?\n/);
   const headers = lines[0].split(",").map(h => h.trim());
   const idx = name => headers.indexOf(name);
 
   for (const line of lines.slice(1)) {
-    const cols = line.split(",");
-
+    const cols = line.split(",").map(c => c.trim().replace(/\r$/, ""));
+  
     const fromUTC = parseUTC(cols, idx, def_element.fromPrefix);
     const toUTC   = parseUTC(cols, idx, def_element.toPrefix);
 
