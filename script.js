@@ -494,10 +494,13 @@ async function loadsowramanamExtras(nowUTC) {
 
     const fromUTC = parseUTC(cols, idx, OS_CONFIG.fromPrefix);
     const toUTC   = parseUTC(cols, idx, OS_CONFIG.toPrefix);
+    console.log("Checking row:", cols, "fromUTC:", fromUTC, "toUTC:", toUTC);
     
-    if (fromUTC == null || toUTC == null) continue;
+    if (fromUTC == null || toUTC == null) 
+      console.log("Skipping row due to null date");
+      continue;
       if (nowUTC >= fromUTC && nowUTC < toUTC) {
-
+        console.log("Matched row found:", cols);
         const result = {};
 
         for (const cfg of OS_CONFIG.lookups) {
