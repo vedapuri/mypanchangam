@@ -705,6 +705,7 @@ function renderElementBlock({
 
 // render sowramanam extras
 function renderSowramanamExtras(data) {
+  console.log("Sowramanam render called", data);
   const container = document.getElementById("sowramanamExtras");
   if (!container) return;
 
