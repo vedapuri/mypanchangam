@@ -1,3 +1,6 @@
+/*
+  This is a good version, before adding rim save it
+*/
 const varsham_data = {
   PBV: {name: "Prabhava",previous: "Akshaya",next: "Vibhava"},
   VBV: {name: "Vibhava",previous: "Prabhava",next: "Shukla"},
