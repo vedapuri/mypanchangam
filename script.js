@@ -726,11 +726,12 @@ function drawTimePie(canvasId, elapsedMs, remainingMs, titleText, elapsedColor, 
   const total = elapsedMs + remainingMs;
   if (total <= 0) return;
 
+  const totalMs = elapsedMs + remainingMs;
   const fraction = elapsedMs / total;
 
   // --- Geometry ---
-  const radius = Math.min(canvas.width, canvas.height) * 0.25;
-  const legendX = 20;
+  const radius  = Math.min(canvas.width, canvas.height) * 0.25;
+  const legendX = 20;                 
   const centerX = legendX + radius + 12;
   const centerY = canvas.height / 2 - 20;
   const startAngle = -0.5 * Math.PI; // 12 o'clock
@@ -740,26 +741,14 @@ function drawTimePie(canvasId, elapsedMs, remainingMs, titleText, elapsedColor, 
   // --- Remaining ---
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
-  ctx.arc(
-    centerX,
-    centerY,
-    radius,
-    startAngle + fraction * 2 * Math.PI,
-    startAngle + 2 * Math.PI
-  );
+  ctx.arc(centerX, centerY, radius, startAngle + fraction * 2 * Math.PI, startAngle + 2 * Math.PI);
   ctx.fillStyle = remainingColor;
   ctx.fill();
 
   // --- Elapsed ---
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
-  ctx.arc(
-    centerX,
-    centerY,
-    radius,
-    startAngle,
-    startAngle + fraction * 2 * Math.PI
-  );
+  ctx.arc(centerX, centerY, radius, startAngle, startAngle + fraction * 2 * Math.PI);
   ctx.fillStyle = elapsedColor;
   ctx.fill();
 
@@ -767,7 +756,6 @@ function drawTimePie(canvasId, elapsedMs, remainingMs, titleText, elapsedColor, 
   ctx.beginPath();
   ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
   ctx.strokeStyle = "#333";
-  ctx.lineWidth = 2;
   ctx.stroke();
 
   // --- Blue boundary line WITH attached arrowhead ---
@@ -776,7 +764,7 @@ function drawTimePie(canvasId, elapsedMs, remainingMs, titleText, elapsedColor, 
   const endX = centerX + Math.cos(boundaryAngle) * boundaryLen;
   const endY = centerY + Math.sin(boundaryAngle) * boundaryLen;
 
-  // ---- Line ----
+  // Line
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
   ctx.lineTo(endX, endY);
@@ -784,39 +772,30 @@ function drawTimePie(canvasId, elapsedMs, remainingMs, titleText, elapsedColor, 
   ctx.lineWidth = 3;
   ctx.stroke();
 
-  // ---- Arrowhead ----
+  // Arrowhead
   const arrowSize = 10;
   const arrowAngle = Math.PI / 10;
   ctx.beginPath();
   ctx.moveTo(endX, endY);
-  ctx.lineTo(
-    endX - Math.cos(boundaryAngle - arrowAngle) * arrowSize,
-    endY - Math.sin(boundaryAngle - arrowAngle) * arrowSize
-  );
-  ctx.lineTo(
-    endX - Math.cos(boundaryAngle + arrowAngle) * arrowSize,
-    endY - Math.sin(boundaryAngle + arrowAngle) * arrowSize
-  );
+  ctx.lineTo(endX - Math.cos(boundaryAngle - arrowAngle) * arrowSize, endY - Math.sin(boundaryAngle - arrowAngle) * arrowSize);
+  ctx.lineTo(endX - Math.cos(boundaryAngle + arrowAngle) * arrowSize, endY - Math.sin(boundaryAngle + arrowAngle) * arrowSize);
   ctx.closePath();
   ctx.fillStyle = "blue";
   ctx.fill();
 
-  ctx.lineWidth = 1; // reset
+  // Reset line width
+  ctx.lineWidth = 1;
 
-  // --- Percent markers 0 / 25 / 50 / 75 ---
-  ctx.fillStyle = "#000";
-  ctx.font = "12px Arial";
+  // --- 0 / 25 / 50 / 75 labels ---
+  ctx.fillStyle = "blue";
+  ctx.font = "9px Arial";
   ["0", "25", "50", "75"].forEach((label, i) => {
-    const angle = startAngle + i * 0.25 * 2 * Math.PI;
-    const x = centerX + Math.cos(angle) * radius * 0.82;
-    const y = centerY + Math.sin(angle) * radius * 0.82;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(label, x, y);
+    const a = startAngle + i * 0.25 * 2 * Math.PI;
+    ctx.fillText(label, centerX + Math.cos(a) * radius * 0.82 - 6, centerY + Math.sin(a) * radius * 0.82 + 4);
   });
 
   // --- Title ---
-  ctx.fillStyle = "#000";
+  ctx.fillStyle = "#000000";
   ctx.font = "18px Arial";
   ctx.textAlign = "center";
   ctx.fillText(titleText, centerX, centerY + radius + 36);
@@ -833,37 +812,35 @@ function drawTimePie(canvasId, elapsedMs, remainingMs, titleText, elapsedColor, 
 
   // Complete
   ctx.fillStyle = elapsedColor;
-  ctx.fillRect(x, y, 12, 12);
+  ctx.fillRect(x, y, 10, 10);
   ctx.strokeStyle = "#666";
   ctx.lineWidth = 1;
-  ctx.strokeRect(x, y, 12, 12);
+  ctx.strokeRect(x, y, 10, 10);
   ctx.fillStyle = "#000";
-  ctx.fillText(`Complete: ${percentComplete}%`, x + 16, y + 10);
+  ctx.fillText(`Complete: ${percentComplete}%`, x + 16, y + 9);
 
   x += ctx.measureText(`Complete: ${percentComplete}%`).width + 30;
 
   // Remaining
   ctx.fillStyle = remainingColor;
-  ctx.fillRect(x, y, 12, 12);
+  ctx.fillRect(x, y, 10, 10);
   ctx.strokeStyle = "#666";
   ctx.lineWidth = 1;
-  ctx.strokeRect(x, y, 12, 12);
+  ctx.strokeRect(x, y, 10, 10);
   ctx.fillStyle = "#000";
-  ctx.fillText(`Remaining: ${percentRemaining}%`, x + 16, y + 10);
+  ctx.fillText(`Remaining: ${percentRemaining}%`, x + 16, y + 9);
 
-  // --- Red minute hand ---
-  const revolutions = percentComplete;
-  const angle = startAngle + revolutions * 2 * Math.PI / 100; // 1% = 1/100 of circle
-  const handColor = "rgba(255,0,0,0.9)";
+  // --- Red hand ---
+  const elapsedPercent = (elapsedMs / totalMs) * 100; // e.g. 2.37%
+  const revolutions = elapsedPercent; // 1 rev per 1%
+  const angle = -Math.PI / 2 + revolutions * 2 * Math.PI;
+
+  const handColor = "rgba(255,0,0,0.8)";
   const handWidth = 3;
   const handLength = radius * 0.98;
-
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
-  ctx.lineTo(
-    centerX + Math.cos(angle) * handLength,
-    centerY + Math.sin(angle) * handLength
-  );
+  ctx.lineTo(centerX + Math.cos(angle) * handLength, centerY + Math.sin(angle) * handLength);
   ctx.strokeStyle = handColor;
   ctx.lineWidth = handWidth;
   ctx.stroke();
