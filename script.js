@@ -415,7 +415,7 @@ const CACHE_BUSTER = "?v=" + Date.now();
 // ---- GLOBAL TIME SETUP (runs once) ----
 const nowLocal = new Date();
 nowLocal.setSeconds(0, 0);        // normalize seconds
-const nowUTC = nowLocal.getTime();
+const nowUTC = Date.now();
 const weekdayName = nowLocal.toLocaleDateString("en-US", {
   weekday: "long"
 });
