@@ -738,8 +738,8 @@ function drawTimePie(
   // --- Geometry ---
   const canvasWidth  = canvas.width;
   const canvasHeight = canvas.height;
-  const radiusInner  = Math.min(canvasWidth, canvasHeight) * 0.25; // inner pie
-  const radiusOuter  = radiusInner * 1.15; // outer rim
+  const radiusInner  = Math.min(canvasWidth, canvasHeight) * 0.25;
+  const radiusOuter  = radiusInner * 1.08; // thinner outer rim for polished look
   const gapWidth     = radiusOuter - radiusInner;
   const legendX      = 20;
   const centerX      = legendX + radiusOuter + 12;
@@ -749,7 +749,7 @@ function drawTimePie(
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
   // -------------------------------
-  // Fill the gap as a clock frame
+  // Fill the gap as a thin clock frame
   // -------------------------------
   ctx.beginPath();
   ctx.arc(centerX, centerY, radiusOuter, 0, 2 * Math.PI);
@@ -783,7 +783,7 @@ function drawTimePie(
   ctx.fillStyle = elapsedColor;
   ctx.fill();
 
-  // --- Outline for inner pie ---
+  // --- Inner pie outline ---
   ctx.beginPath();
   ctx.arc(centerX, centerY, radiusInner, 0, 2 * Math.PI);
   ctx.strokeStyle = "#333";
@@ -797,13 +797,37 @@ function drawTimePie(
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  // --- Blue boundary line with arrow ---
-  const boundaryAngle = startAngle + fraction * 2 * Math.PI;
-  const boundaryLen = radiusInner * 0.75;
-  const endX = centerX + Math.cos(boundaryAngle) * boundaryLen;
-  const endY = centerY + Math.sin(boundaryAngle) * boundaryLen;
+  // --- Percent markers ---
+  const percents = [0, 25, 50, 75];
+  ctx.fillStyle = "#000";
+  ctx.font = `${radiusInner * 0.25}px Arial`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  percents.forEach(p => {
+    const angle = startAngle + (p / 100) * 2 * Math.PI;
+    const x = centerX + Math.cos(angle) * (radiusInner + 12);
+    const y = centerY + Math.sin(angle) * (radiusInner + 12);
+    ctx.fillText(p.toString(), x, y);
+  });
 
-  // ---- Line ----
+  // --- Red minute hand ---
+  const minuteAngle = startAngle + fraction * 2 * Math.PI;
+  const minuteLen = radiusInner * 0.9;
+  const mx = centerX + Math.cos(minuteAngle) * minuteLen;
+  const my = centerY + Math.sin(minuteAngle) * minuteLen;
+
+  ctx.beginPath();
+  ctx.moveTo(centerX, centerY);
+  ctx.lineTo(mx, my);
+  ctx.strokeStyle = "red";
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  // --- Blue boundary line with arrow ---
+  const boundaryLen = radiusInner * 0.75;
+  const endX = centerX + Math.cos(minuteAngle) * boundaryLen;
+  const endY = centerY + Math.sin(minuteAngle) * boundaryLen;
+
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
   ctx.lineTo(endX, endY);
@@ -817,12 +841,12 @@ function drawTimePie(
   const angleOffset = Math.PI / 7;
   ctx.moveTo(endX, endY);
   ctx.lineTo(
-    endX - arrowSize * Math.cos(boundaryAngle - angleOffset),
-    endY - arrowSize * Math.sin(boundaryAngle - angleOffset)
+    endX - arrowSize * Math.cos(minuteAngle - angleOffset),
+    endY - arrowSize * Math.sin(minuteAngle - angleOffset)
   );
   ctx.lineTo(
-    endX - arrowSize * Math.cos(boundaryAngle + angleOffset),
-    endY - arrowSize * Math.sin(boundaryAngle + angleOffset)
+    endX - arrowSize * Math.cos(minuteAngle + angleOffset),
+    endY - arrowSize * Math.sin(minuteAngle + angleOffset)
   );
   ctx.closePath();
   ctx.fillStyle = "blue";
