@@ -513,7 +513,7 @@ async function loadsowramanamExtras(nowUTC) {
       }
 
       renderSowramanamExtras(result);
-      await sleep(5000);  
+        
 
       return;
     }
@@ -606,7 +606,7 @@ async function loadElementData(def_element, nowUTC) {
         elapsedColor: pieColors.elapsed,
         remainingColor: pieColors.remaining
       });
-      await sleep(5000);  
+        
       return;
     }
   }
