@@ -538,7 +538,7 @@ async function loadElementData(def_element, nowUTC) {
     if (fromUTC == null || toUTC == null) continue;
       if (nowUTC >= fromUTC && nowUTC < toUTC) {
 
-        const code = cols[idx(def_element.codeColumn)];
+        const code = cols[idx(def_element.codeColumn)]?.trim();
         const info = def_element.mapping[code] ?? {};
         const name = info.name ?? code;
         const previous = info.previous ?? "—";
@@ -649,7 +649,7 @@ function parseUTC(cols, idx, prefix) {
     return null;
   }
 
-  const d = cols[dateIdx];
+  const d = cols[dateIdx]?.trim();
   const hh = cols[hourIdx]?.padStart(2, "0");
   const mm = cols[minIdx]?.padStart(2, "0");
 
