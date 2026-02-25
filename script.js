@@ -502,7 +502,7 @@ async function loadsowramanamExtras(nowUTC) {
 
         for (const cfg of OS_CONFIG.lookups) {
           const colIdx = idx(cfg.column);
-          const code = colIdx !== -1 ? cols[colIdx] : null;
+          const code = colIdx !== -1 ? cols[colIdx]?.trim() : null;
           const entry = (code != null && code !== "") ? cfg.dict[code] : null;
           result[cfg.key] = {
             code,
