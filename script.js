@@ -739,8 +739,7 @@ function drawTimePie(
   const canvasWidth  = canvas.width;
   const canvasHeight = canvas.height;
   const radiusInner  = Math.min(canvasWidth, canvasHeight) * 0.25;
-  const radiusOuter  = radiusInner * 1.08; // thinner outer rim for polished look
-  const gapWidth     = radiusOuter - radiusInner;
+  const radiusOuter  = radiusInner * 1.08; // thin outer rim
   const legendX      = 20;
   const centerX      = legendX + radiusOuter + 12;
   const centerY      = canvasHeight / 2 - 20;
@@ -797,7 +796,22 @@ function drawTimePie(
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  // --- Percent markers ---
+  // --- Legend ---
+  ctx.font = "14px Arial";
+  ctx.fillStyle = "#000";
+  ctx.textAlign = "left";
+  ctx.textBaseline = "top";
+  ctx.fillText(titleText, legendX, centerY - radiusOuter);
+  ctx.fillStyle = elapsedColor;
+  ctx.fillRect(legendX, centerY - radiusOuter + 20, 12, 12);
+  ctx.fillStyle = "#000";
+  ctx.fillText("Elapsed", legendX + 20, centerY - radiusOuter + 20);
+  ctx.fillStyle = remainingColor;
+  ctx.fillRect(legendX, centerY - radiusOuter + 40, 12, 12);
+  ctx.fillStyle = "#000";
+  ctx.fillText("Remaining", legendX + 20, centerY - radiusOuter + 40);
+
+  // --- Percent markers (0, 25, 50, 75) ---
   const percents = [0, 25, 50, 75];
   ctx.fillStyle = "#000";
   ctx.font = `${radiusInner * 0.25}px Arial`;
