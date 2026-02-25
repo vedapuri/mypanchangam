@@ -724,8 +724,8 @@ function drawTimePie(
   remainingMs, 
   titleText, 
   elapsedColor,
-  remainingColor)
- {
+  remainingColor
+) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
@@ -735,14 +735,27 @@ function drawTimePie(
 
   const fraction = elapsedMs / total;
 
-// --- Geometry ---
-  const radius  = Math.min(canvas.width, canvas.height) * 0.25;
-  const legendX = 20;                 
-  const centerX = legendX + radius + 12;
-  const centerY = canvas.height / 2 - 20;
-  const startAngle = -0.5 * Math.PI; // 12 o'clock
+  // --- Geometry ---
+  const canvasWidth  = canvas.width;
+  const canvasHeight = canvas.height;
+  const radiusInner  = Math.min(canvasWidth, canvasHeight) * 0.25; // inner pie
+  const radiusOuter  = radiusInner * 1.15; // outer rim
+  const gapWidth     = radiusOuter - radiusInner;
+  const legendX      = 20;
+  const centerX      = legendX + radiusOuter + 12;
+  const centerY      = canvasHeight / 2 - 20;
+  const startAngle   = -0.5 * Math.PI; // 12 o'clock
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+  // -------------------------------
+  // Fill the gap as a clock frame
+  // -------------------------------
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, radiusOuter, 0, 2 * Math.PI);
+  ctx.arc(centerX, centerY, radiusInner, 0, 2 * Math.PI, true);
+  ctx.fillStyle = "maroon";
+  ctx.fill();
 
   // --- Remaining ---
   ctx.beginPath();
@@ -750,7 +763,7 @@ function drawTimePie(
   ctx.arc(
     centerX,
     centerY,
-    radius,
+    radiusInner,
     startAngle + fraction * 2 * Math.PI,
     startAngle + 2 * Math.PI
   );
@@ -763,128 +776,57 @@ function drawTimePie(
   ctx.arc(
     centerX,
     centerY,
-    radius,
+    radiusInner,
     startAngle,
     startAngle + fraction * 2 * Math.PI
   );
   ctx.fillStyle = elapsedColor;
   ctx.fill();
 
-  // --- Outline ---
+  // --- Outline for inner pie ---
   ctx.beginPath();
-  ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+  ctx.arc(centerX, centerY, radiusInner, 0, 2 * Math.PI);
   ctx.strokeStyle = "#333";
+  ctx.lineWidth = 2;
   ctx.stroke();
 
-  
-  // --- Blue boundary line WITH attached arrowhead ---
+  // --- Outer rim outline ---
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, radiusOuter, 0, 2 * Math.PI);
+  ctx.strokeStyle = "#333";
+  ctx.lineWidth = 2;
+  ctx.stroke();
 
-const boundaryAngle = startAngle + fraction * 2 * Math.PI;
+  // --- Blue boundary line with arrow ---
+  const boundaryAngle = startAngle + fraction * 2 * Math.PI;
+  const boundaryLen = radiusInner * 0.75;
+  const endX = centerX + Math.cos(boundaryAngle) * boundaryLen;
+  const endY = centerY + Math.sin(boundaryAngle) * boundaryLen;
 
-// Single shared endpoint
-const boundaryLen = radius * 0.75;
-const endX = centerX + Math.cos(boundaryAngle) * boundaryLen;
-const endY = centerY + Math.sin(boundaryAngle) * boundaryLen;
+  // ---- Line ----
+  ctx.beginPath();
+  ctx.moveTo(centerX, centerY);
+  ctx.lineTo(endX, endY);
+  ctx.strokeStyle = "blue";
+  ctx.lineWidth = 3;
+  ctx.stroke();
 
-// ---- Line ----
-ctx.beginPath();
-ctx.moveTo(centerX, centerY);
-ctx.lineTo(endX, endY);
-ctx.strokeStyle = "blue";
-ctx.lineWidth = 3;
-ctx.stroke();
-
-// ---- Arrowhead ----
-const arrowSize = 10;
-const arrowAngle = Math.PI / 10;
-
-ctx.beginPath();
-ctx.moveTo(endX, endY);
-ctx.lineTo(
-  endX - Math.cos(boundaryAngle - arrowAngle) * arrowSize,
-  endY - Math.sin(boundaryAngle - arrowAngle) * arrowSize
-);
-ctx.lineTo(
-  endX - Math.cos(boundaryAngle + arrowAngle) * arrowSize,
-  endY - Math.sin(boundaryAngle + arrowAngle) * arrowSize
-);
-ctx.closePath();
-ctx.fillStyle = "blue";
-ctx.fill();
-
-// Reset
-ctx.lineWidth = 1;
-// --- 0 / 25 / 50 / 75 labels ---
+  // ---- Arrowhead ----
+  const arrowSize = 10;
+  ctx.beginPath();
+  const angleOffset = Math.PI / 7;
+  ctx.moveTo(endX, endY);
+  ctx.lineTo(
+    endX - arrowSize * Math.cos(boundaryAngle - angleOffset),
+    endY - arrowSize * Math.sin(boundaryAngle - angleOffset)
+  );
+  ctx.lineTo(
+    endX - arrowSize * Math.cos(boundaryAngle + angleOffset),
+    endY - arrowSize * Math.sin(boundaryAngle + angleOffset)
+  );
+  ctx.closePath();
   ctx.fillStyle = "blue";
-  ctx.font = "9px Arial";
-  ["0", "25", "50", "75"].forEach((label, i) => {
-    const a = startAngle + i * 0.25 * 2 * Math.PI;
-    ctx.fillText(
-      label,
-      centerX + Math.cos(a) * radius * 0.82 - 6,
-      centerY + Math.sin(a) * radius * 0.82 + 4
-    );
-  });
-
-  // --- Title ---
-  ctx.fillStyle = "#000000";
-  ctx.font = "18px Arial";
-  ctx.textAlign = "center";
-  ctx.fillText(titleText, centerX, centerY + radius + 36);
-
-  // --- Legend ---
-
-  const percentComplete = +(fraction * 100).toFixed(2);
-  const percentRemaining = +(100 - percentComplete).toFixed(2);
-  
-   
-   ctx.textAlign = "left";
-  ctx.font = "16px Arial";
-
-  let x = 20;
-  const y = centerY + radius + 62;
-
-   // Complete
-   ctx.fillStyle = elapsedColor;
-   ctx.fillRect(x, y, 10, 10);
-   // Border (important!)
-   ctx.strokeStyle = "#666";
-   ctx.lineWidth = 1;
-   ctx.strokeRect(x, y, 10, 10);
-   ctx.fillStyle = "#000";
-   ctx.fillText(`Complete: ${percentComplete}%`, x + 16, y + 9);
-
-   x += ctx.measureText(`Complete: ${percentComplete}%`).width + 30;
-
-   // Remaining
-   ctx.fillStyle = remainingColor;
-   ctx.fillRect(x, y, 10, 10);
-   // Border (important!)
-   ctx.strokeStyle = "#666";
-   ctx.lineWidth = 1;
-   ctx.strokeRect(x, y, 10, 10);
-   ctx.fillStyle = "#000";
-   ctx.fillText(`Remaining: ${percentRemaining}%`, x + 16, y + 9);
-
-   const elapsedPercent = (elapsedMs / total) * 100; // e.g. 2.37%
-   const revolutions = elapsedPercent; // 1 rev per 1%
-   const angle = -Math.PI / 2 + revolutions * 2 * Math.PI;
-
-   const handColor = "rgba(255,0,0,0.8)"; 
-   const handWidth = 3;
-   const handLength = radius * 0.98;
-   ctx.beginPath();
-   ctx.moveTo(centerX, centerY);
-   ctx.lineTo(
-   centerX + Math.cos(angle) * handLength,
-   centerY + Math.sin(angle) * handLength
-   );
-   ctx.strokeStyle = handColor;
-   ctx.lineWidth = handWidth;
-   ctx.stroke();
-   ctx.lineWidth = 1; // reset (important)
-
-
+  ctx.fill();
 }
 
 
