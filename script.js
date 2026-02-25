@@ -492,13 +492,10 @@ async function loadsowramanamExtras(nowUTC) {
     const cols = line.split(",").map(c => c.trim().replace(/\r$/, ""));
     const fromUTC = parseUTC(cols, idx, OS_CONFIG.fromPrefix);
     const toUTC   = parseUTC(cols, idx, OS_CONFIG.toPrefix);
-    console.log("Checking row:", cols, "fromUTC:", fromUTC, "toUTC:", toUTC);
     
     if (fromUTC == null || toUTC == null) {
-      console.log("Skipping row due to null date");
       continue;}
       if (nowUTC >= fromUTC && nowUTC < toUTC) {
-        console.log("Matched row found:", cols);
         const result = {};
 
         for (const cfg of OS_CONFIG.lookups) {
@@ -686,7 +683,6 @@ function renderElementBlock({
   elapsedColor,
   remainingColor 
 }) {
-  console.log("element block render called");
   const container = document.getElementById(containerId);
   if (!container) return;
 
@@ -706,7 +702,6 @@ function renderElementBlock({
 
 // render sowramanam extras
 function renderSowramanamExtras(data) {
-  console.log("Sowramanam render called", data);
   const container = document.getElementById("sowramanamExtras");
   if (!container) return;
 
