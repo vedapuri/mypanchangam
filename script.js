@@ -718,14 +718,7 @@ function renderSowramanamExtras(data) {
  * PIE CHART
  ***********************/
 
-function drawTimePie(
-  canvasId, 
-  elapsedMs, 
-  remainingMs, 
-  titleText, 
-  elapsedColor,
-  remainingColor
-) {
+function drawTimePie(canvasId, elapsedMs, remainingMs, titleText, elapsedColor, remainingColor) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
@@ -736,25 +729,13 @@ function drawTimePie(
   const fraction = elapsedMs / total;
 
   // --- Geometry ---
-  const canvasWidth  = canvas.width;
-  const canvasHeight = canvas.height;
-  const radiusInner  = Math.min(canvasWidth, canvasHeight) * 0.25;
-  const radiusOuter  = radiusInner * 1.08; // thin outer rim
-  const legendX      = 20;
-  const centerX      = legendX + radiusOuter + 12;
-  const centerY      = canvasHeight / 2 - 20;
-  const startAngle   = -0.5 * Math.PI; // 12 o'clock
+  const radius = Math.min(canvas.width, canvas.height) * 0.25;
+  const legendX = 20;
+  const centerX = legendX + radius + 12;
+  const centerY = canvas.height / 2 - 20;
+  const startAngle = -0.5 * Math.PI; // 12 o'clock
 
-  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-  // -------------------------------
-  // Fill the gap as a thin clock frame
-  // -------------------------------
-  ctx.beginPath();
-  ctx.arc(centerX, centerY, radiusOuter, 0, 2 * Math.PI);
-  ctx.arc(centerX, centerY, radiusInner, 0, 2 * Math.PI, true);
-  ctx.fillStyle = "maroon";
-  ctx.fill();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // --- Remaining ---
   ctx.beginPath();
@@ -762,7 +743,7 @@ function drawTimePie(
   ctx.arc(
     centerX,
     centerY,
-    radiusInner,
+    radius,
     startAngle + fraction * 2 * Math.PI,
     startAngle + 2 * Math.PI
   );
@@ -775,73 +756,27 @@ function drawTimePie(
   ctx.arc(
     centerX,
     centerY,
-    radiusInner,
+    radius,
     startAngle,
     startAngle + fraction * 2 * Math.PI
   );
   ctx.fillStyle = elapsedColor;
   ctx.fill();
 
-  // --- Inner pie outline ---
+  // --- Outline ---
   ctx.beginPath();
-  ctx.arc(centerX, centerY, radiusInner, 0, 2 * Math.PI);
+  ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
   ctx.strokeStyle = "#333";
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  // --- Outer rim outline ---
-  ctx.beginPath();
-  ctx.arc(centerX, centerY, radiusOuter, 0, 2 * Math.PI);
-  ctx.strokeStyle = "#333";
-  ctx.lineWidth = 2;
-  ctx.stroke();
+  // --- Blue boundary line WITH attached arrowhead ---
+  const boundaryAngle = startAngle + fraction * 2 * Math.PI;
+  const boundaryLen = radius * 0.75;
+  const endX = centerX + Math.cos(boundaryAngle) * boundaryLen;
+  const endY = centerY + Math.sin(boundaryAngle) * boundaryLen;
 
-  // --- Legend ---
-  ctx.font = "14px Arial";
-  ctx.fillStyle = "#000";
-  ctx.textAlign = "left";
-  ctx.textBaseline = "top";
-  ctx.fillText(titleText, legendX, centerY - radiusOuter);
-  ctx.fillStyle = elapsedColor;
-  ctx.fillRect(legendX, centerY - radiusOuter + 20, 12, 12);
-  ctx.fillStyle = "#000";
-  ctx.fillText("Elapsed", legendX + 20, centerY - radiusOuter + 20);
-  ctx.fillStyle = remainingColor;
-  ctx.fillRect(legendX, centerY - radiusOuter + 40, 12, 12);
-  ctx.fillStyle = "#000";
-  ctx.fillText("Remaining", legendX + 20, centerY - radiusOuter + 40);
-
-  // --- Percent markers (0, 25, 50, 75) ---
-  const percents = [0, 25, 50, 75];
-  ctx.fillStyle = "#000";
-  ctx.font = `${radiusInner * 0.25}px Arial`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  percents.forEach(p => {
-    const angle = startAngle + (p / 100) * 2 * Math.PI;
-    const x = centerX + Math.cos(angle) * (radiusInner + 12);
-    const y = centerY + Math.sin(angle) * (radiusInner + 12);
-    ctx.fillText(p.toString(), x, y);
-  });
-
-  // --- Red minute hand ---
-  const minuteAngle = startAngle + fraction * 2 * Math.PI;
-  const minuteLen = radiusInner * 0.9;
-  const mx = centerX + Math.cos(minuteAngle) * minuteLen;
-  const my = centerY + Math.sin(minuteAngle) * minuteLen;
-
-  ctx.beginPath();
-  ctx.moveTo(centerX, centerY);
-  ctx.lineTo(mx, my);
-  ctx.strokeStyle = "red";
-  ctx.lineWidth = 3;
-  ctx.stroke();
-
-  // --- Blue boundary line with arrow ---
-  const boundaryLen = radiusInner * 0.75;
-  const endX = centerX + Math.cos(minuteAngle) * boundaryLen;
-  const endY = centerY + Math.sin(minuteAngle) * boundaryLen;
-
+  // ---- Line ----
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
   ctx.lineTo(endX, endY);
@@ -851,20 +786,88 @@ function drawTimePie(
 
   // ---- Arrowhead ----
   const arrowSize = 10;
+  const arrowAngle = Math.PI / 10;
   ctx.beginPath();
-  const angleOffset = Math.PI / 7;
   ctx.moveTo(endX, endY);
   ctx.lineTo(
-    endX - arrowSize * Math.cos(minuteAngle - angleOffset),
-    endY - arrowSize * Math.sin(minuteAngle - angleOffset)
+    endX - Math.cos(boundaryAngle - arrowAngle) * arrowSize,
+    endY - Math.sin(boundaryAngle - arrowAngle) * arrowSize
   );
   ctx.lineTo(
-    endX - arrowSize * Math.cos(minuteAngle + angleOffset),
-    endY - arrowSize * Math.sin(minuteAngle + angleOffset)
+    endX - Math.cos(boundaryAngle + arrowAngle) * arrowSize,
+    endY - Math.sin(boundaryAngle + arrowAngle) * arrowSize
   );
   ctx.closePath();
   ctx.fillStyle = "blue";
   ctx.fill();
+
+  ctx.lineWidth = 1; // reset
+
+  // --- Percent markers 0 / 25 / 50 / 75 ---
+  ctx.fillStyle = "#000";
+  ctx.font = "12px Arial";
+  ["0", "25", "50", "75"].forEach((label, i) => {
+    const angle = startAngle + i * 0.25 * 2 * Math.PI;
+    const x = centerX + Math.cos(angle) * radius * 0.82;
+    const y = centerY + Math.sin(angle) * radius * 0.82;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(label, x, y);
+  });
+
+  // --- Title ---
+  ctx.fillStyle = "#000";
+  ctx.font = "18px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText(titleText, centerX, centerY + radius + 36);
+
+  // --- Legend ---
+  const percentComplete = +(fraction * 100).toFixed(2);
+  const percentRemaining = +(100 - percentComplete).toFixed(2);
+
+  ctx.textAlign = "left";
+  ctx.font = "16px Arial";
+
+  let x = 20;
+  const y = centerY + radius + 62;
+
+  // Complete
+  ctx.fillStyle = elapsedColor;
+  ctx.fillRect(x, y, 12, 12);
+  ctx.strokeStyle = "#666";
+  ctx.lineWidth = 1;
+  ctx.strokeRect(x, y, 12, 12);
+  ctx.fillStyle = "#000";
+  ctx.fillText(`Complete: ${percentComplete}%`, x + 16, y + 10);
+
+  x += ctx.measureText(`Complete: ${percentComplete}%`).width + 30;
+
+  // Remaining
+  ctx.fillStyle = remainingColor;
+  ctx.fillRect(x, y, 12, 12);
+  ctx.strokeStyle = "#666";
+  ctx.lineWidth = 1;
+  ctx.strokeRect(x, y, 12, 12);
+  ctx.fillStyle = "#000";
+  ctx.fillText(`Remaining: ${percentRemaining}%`, x + 16, y + 10);
+
+  // --- Red minute hand ---
+  const revolutions = percentComplete;
+  const angle = startAngle + revolutions * 2 * Math.PI / 100; // 1% = 1/100 of circle
+  const handColor = "rgba(255,0,0,0.9)";
+  const handWidth = 3;
+  const handLength = radius * 0.98;
+
+  ctx.beginPath();
+  ctx.moveTo(centerX, centerY);
+  ctx.lineTo(
+    centerX + Math.cos(angle) * handLength,
+    centerY + Math.sin(angle) * handLength
+  );
+  ctx.strokeStyle = handColor;
+  ctx.lineWidth = handWidth;
+  ctx.stroke();
+  ctx.lineWidth = 1; // reset
 }
 
 
