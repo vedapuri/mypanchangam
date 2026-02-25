@@ -686,6 +686,7 @@ function renderElementBlock({
   elapsedColor,
   remainingColor 
 }) {
+  console.log("element block render called");
   const container = document.getElementById(containerId);
   if (!container) return;
 
