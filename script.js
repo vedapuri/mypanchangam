@@ -453,7 +453,7 @@ document.getElementById("version").textContent =
 
 async function loadAll(nowUTC) {
   await loadElementColors();
-  await loadsowramanamExtras(nowUTC);  
+  // await loadsowramanamExtras(nowUTC);  
   await loadElementData(ELEMENT_DEFINITIONS.thithi, nowUTC);
   await loadElementData(ELEMENT_DEFINITIONS.nakshatram, nowUTC);
   await loadElementData(ELEMENT_DEFINITIONS.yogam, nowUTC);
