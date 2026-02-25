@@ -764,7 +764,6 @@ function drawTimePie(canvasId, elapsedMs, remainingMs, titleText, elapsedColor, 
   const endX = centerX + Math.cos(boundaryAngle) * boundaryLen;
   const endY = centerY + Math.sin(boundaryAngle) * boundaryLen;
 
-  // Line
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
   ctx.lineTo(endX, endY);
@@ -772,7 +771,6 @@ function drawTimePie(canvasId, elapsedMs, remainingMs, titleText, elapsedColor, 
   ctx.lineWidth = 3;
   ctx.stroke();
 
-  // Arrowhead
   const arrowSize = 10;
   const arrowAngle = Math.PI / 10;
   ctx.beginPath();
@@ -783,7 +781,6 @@ function drawTimePie(canvasId, elapsedMs, remainingMs, titleText, elapsedColor, 
   ctx.fillStyle = "blue";
   ctx.fill();
 
-  // Reset line width
   ctx.lineWidth = 1;
 
   // --- 0 / 25 / 50 / 75 labels ---
@@ -830,17 +827,16 @@ function drawTimePie(canvasId, elapsedMs, remainingMs, titleText, elapsedColor, 
   ctx.fillStyle = "#000";
   ctx.fillText(`Remaining: ${percentRemaining}%`, x + 16, y + 9);
 
-  // --- Red hand ---
-  const elapsedPercent = (elapsedMs / totalMs) * 100; // e.g. 2.37%
-  const revolutions = elapsedPercent; // 1 rev per 1%
-  const angle = -Math.PI / 2 + revolutions * 2 * Math.PI;
-
+  // --- Corrected Red hand ---
+  // For every 1% of blue hand, red makes 100% rotation
+  const redAngle = startAngle + fraction * 2 * Math.PI * 100;
   const handColor = "rgba(255,0,0,0.8)";
   const handWidth = 3;
   const handLength = radius * 0.98;
+
   ctx.beginPath();
   ctx.moveTo(centerX, centerY);
-  ctx.lineTo(centerX + Math.cos(angle) * handLength, centerY + Math.sin(angle) * handLength);
+  ctx.lineTo(centerX + Math.cos(redAngle) * handLength, centerY + Math.sin(redAngle) * handLength);
   ctx.strokeStyle = handColor;
   ctx.lineWidth = handWidth;
   ctx.stroke();
