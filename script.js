@@ -740,19 +740,7 @@ function renderElementBlock({
   remainingColor);
 }
 
-// render sowramanam extras
-function renderSowramanamExtras(data) {
-  const container = document.getElementById("sowramanamExtras");
-  if (!container) return;
 
-    container.innerHTML = `
-      <strong>Sowramaanam based data</strong><br><br>
-      Varsham: ${data.varsham?.name ?? "—"}<br>
-      Ayanam: ${data.ayanam?.name ?? "—"}<br>
-      Ruthu: ${data.ruthu?.name ?? "—"}<br>
-      Masam: ${data.masam?.name ?? "—"}<br>
-    `;
-}
 
 /***********************
  * PIE CHART
@@ -763,11 +751,10 @@ function drawTimePie(canvasId, elapsedMs, remainingMs, titleText, elapsedColor, 
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
 
-  const total = elapsedMs + remainingMs;
-  if (total <= 0) return;
-
   const totalMs = elapsedMs + remainingMs;
-  const fraction = elapsedMs / total;
+  if (totalMs <= 0) return;
+
+  const fraction = elapsedMs / totalMs;
 
   // --- Geometry ---
   const radius  = Math.min(canvas.width, canvas.height) * 0.25;
