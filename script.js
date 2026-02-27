@@ -449,7 +449,7 @@ document.getElementById("version").textContent =
   "JS loaded: " + new Date().toLocaleString();
 
 let GLOBAL_EXTRAS = {
-  thithi: null,
+  chandramanam: null,
   sowramanam: null
 };
 
@@ -581,7 +581,7 @@ async function loadElementData(def_element, nowUTC) {
       // Thithi-only extras rendering
       // -------------------------------
       if (def_element.key === "thithi" && resolvedExtras) {
-        GLOBAL_EXTRAS.thithi = {
+        GLOBAL_EXTRAS.chandramanam = {
           varsham:  resolvedExtras.varsham?.name ?? "—",
           masam:    resolvedExtras.masam?.name ?? "—",
           paksham:  resolvedExtras.paksham?.name ?? "—",
@@ -635,10 +635,10 @@ async function loadElementData(def_element, nowUTC) {
       // This ensures rendering happens only when BOTH are loaded
       // -------------------------------
       function tryRenderCombinedExtras() {
-        if (!GLOBAL_EXTRAS.thithi || !GLOBAL_EXTRAS.sowramanam) return;
+        if (!GLOBAL_EXTRAS.chandramanam || !GLOBAL_EXTRAS.sowramanam) return;
 
           renderCombinedExtras({
-            thithi: GLOBAL_EXTRAS.thithi,
+            thithi: GLOBAL_EXTRAS.chandramanam,
             sowramanam: GLOBAL_EXTRAS.sowramanam
           });
       }
@@ -657,20 +657,20 @@ async function loadElementData(def_element, nowUTC) {
               Ayanam: ${data.sowramanam.ayanam?.name ?? "—"}<br>
               Ruthu: ${data.sowramanam.ruthu?.name ?? "—"}<br>
               Masam: ${data.sowramanam.masam?.name ?? "—"}<br>
-              Paksham: ${data.thithi.paksham}<br>
+              Paksham: ${data.chandramanam.paksham}<br>
               Thithu: See thithi details below<br> 
-              Vaasaram: ${data.thithi.weekdayTrad}<br>
+              Vaasaram: ${data.chandramanam.weekdayTrad}<br>
             `;
           // Chaandramaanam block
             chandramanamDiv.innerHTML = `
               <strong>Chaandramaana sankalpam</strong><br><br>
-              Samvatsaram: ${data.thithi.varsham}<br>
+              Samvatsaram: ${data.chandramanam.varsham}<br>
               Ayanam: ${data.sowramanam.ayanam?.name ?? "—"}<br>
-              Ruthu: ${data.thithi.ruthu}<br>
-              Masam: ${data.thithi.masam}<br>
-              Paksham: ${data.thithi.paksham}<br>
+              Ruthu: ${data.chandramanam.ruthu}<br>
+              Masam: ${data.chandramanam.masam}<br>
+              Paksham: ${data.chandramanam.paksham}<br>
               Thithu: See thithi details below<br> 
-              Vaasaram: ${data.thithi.weekdayTrad}<br>
+              Vaasaram: ${data.chandramanam.weekdayTrad}<br>
             `;
 
         }
