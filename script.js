@@ -638,7 +638,7 @@ async function loadElementData(def_element, nowUTC) {
         if (!GLOBAL_EXTRAS.chandramanam || !GLOBAL_EXTRAS.sowramanam) return;
 
           renderCombinedExtras({
-            thithi: GLOBAL_EXTRAS.chandramanam,
+            chandramanam: GLOBAL_EXTRAS.chandramanam,
             sowramanam: GLOBAL_EXTRAS.sowramanam
           });
       }
@@ -658,7 +658,7 @@ async function loadElementData(def_element, nowUTC) {
               Ruthu: ${data.sowramanam.ruthu?.name ?? "—"}<br>
               Masam: ${data.sowramanam.masam?.name ?? "—"}<br>
               Paksham: ${data.chandramanam.paksham}<br>
-              Thithu: See thithi details below<br> 
+              Thithi: See thithi details below<br> 
               Vaasaram: ${data.chandramanam.weekdayTrad}<br>
             `;
           // Chaandramaanam block
@@ -669,24 +669,12 @@ async function loadElementData(def_element, nowUTC) {
               Ruthu: ${data.chandramanam.ruthu}<br>
               Masam: ${data.chandramanam.masam}<br>
               Paksham: ${data.chandramanam.paksham}<br>
-              Thithu: See thithi details below<br> 
+              Thithi: See thithi details below<br> 
               Vaasaram: ${data.chandramanam.weekdayTrad}<br>
             `;
 
         }
-function renderThithiExtras(data) {
-  const container = document.getElementById("thithiExtras");
-  if (!container) return;
 
-    container.innerHTML = `
-      <strong>Chaandramaanam based data</strong><br><br>
-      varsham: ${data.varsham}<br>
-      Ruthu: ${data.ruthu}<br>
-      Masam: ${data.masam}<br>
-      Paksham: ${data.paksham}<br>
-      Vaasaram: ${data.weekdayTrad}<br>
-    `;
-}
 
 
 function parseUTC(cols, idx, prefix) {
