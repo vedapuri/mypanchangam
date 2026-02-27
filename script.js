@@ -1,5 +1,5 @@
 /*
-  This is a good version, before adding rim save it
+  This is a good version, before adding rim save it and with two sankalpams
 */
 const varsham_data = {
   PBV: {name: "Prabhava",previous: "Akshaya",next: "Vibhava"},
