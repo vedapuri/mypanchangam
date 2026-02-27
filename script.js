@@ -448,6 +448,10 @@ document.getElementById("nowTime").innerHTML =
 document.getElementById("version").textContent =
   "JS loaded: " + new Date().toLocaleString();
 
+let GLOBAL_EXTRAS = {
+  thithi: null,
+  sowramanam: null
+};
 
 /***********************
  * MAIN ENTRY POINT
@@ -513,9 +517,8 @@ async function loadsowramanamExtras(nowUTC) {
         };
       }
 
-      renderSowramanamExtras(result);
-        
-
+      GLOBAL_EXTRAS.sowramanam = result;
+      tryRenderCombinedExtras();
       return;
     }
   }
@@ -578,16 +581,61 @@ async function loadElementData(def_element, nowUTC) {
       // Thithi-only extras rendering
       // -------------------------------
       if (def_element.key === "thithi" && resolvedExtras) {
-          renderThithiExtras({
+        GLOBAL_EXTRAS.thithi = {
           varsham:  resolvedExtras.varsham?.name ?? "—",
           masam:    resolvedExtras.masam?.name ?? "—",
           paksham:  resolvedExtras.paksham?.name ?? "—",
           ruthu:    resolvedExtras.ruthu?.name ?? "—",
           weekday:  CURRENT_DAY_INFO.weekday,
           weekdayTrad: CURRENT_DAY_INFO.traditional
-        });
+        };
+
+        tryRenderCombinedExtras();
       }
 
+      // -------------------------------
+      // This ensures rendering happens only when BOTH are loaded
+      // -------------------------------
+      function tryRenderCombinedExtras() {
+        if (!GLOBAL_EXTRAS.thithi || !GLOBAL_EXTRAS.sowramanam) return;
+
+          renderCombinedExtras({
+            thithi: GLOBAL_EXTRAS.thithi,
+            sowramanam: GLOBAL_EXTRAS.sowramanam
+          });
+      }
+
+        function renderCombinedExtras(data) {
+
+          const chandramanamDiv = document.getElementById("thithiExtras");
+          const sowramanamDiv  = document.getElementById("sowramanamExtras");
+
+          if (!chandramanamDiv || !sowramanamDiv) return;
+
+          // Sowramaanam block
+            sowraDiv.innerHTML = `
+              <strong>Sowramaana sankalpam</strong><br><br>
+              Samvatsaram: ${data.sowramanam.varsham?.name ?? "—"}<br>
+              Ayanam: ${data.sowramanam.ayanam?.name ?? "—"}<br>
+              Ruthu: ${data.sowramanam.ruthu?.name ?? "—"}<br>
+              Masam: ${data.sowramanam.masam?.name ?? "—"}<br>
+              Paksham: ${data.thithi.paksham}<br>
+              Thithu: See thithi details below<br> 
+              Vaasaram: ${data.thithi.weekdayTrad}<br>
+            `;
+          // Chaandramaanam block
+            thithiDiv.innerHTML = `
+              <strong>Chaandramaana sankalpam</strong><br><br>
+              Samvatsaram: ${data.thithi.varsham}<br>
+              Ayanam: ${data.sowramanam.ayanam?.name ?? "—"}<br>
+              Ruthu: ${data.thithi.ruthu}<br>
+              Masam: ${data.thithi.masam}<br>
+              Paksham: ${data.thithi.paksham}<br>
+              Thithu: See thithi details below<br> 
+              Vaasaram: ${data.thithi.weekdayTrad}<br>
+            `;
+
+        }
       // -------------------------------
       // Main block rendering (unchanged)
       // -------------------------------
