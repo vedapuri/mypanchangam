@@ -593,49 +593,7 @@ async function loadElementData(def_element, nowUTC) {
         tryRenderCombinedExtras();
       }
 
-      // -------------------------------
-      // This ensures rendering happens only when BOTH are loaded
-      // -------------------------------
-      function tryRenderCombinedExtras() {
-        if (!GLOBAL_EXTRAS.thithi || !GLOBAL_EXTRAS.sowramanam) return;
-
-          renderCombinedExtras({
-            thithi: GLOBAL_EXTRAS.thithi,
-            sowramanam: GLOBAL_EXTRAS.sowramanam
-          });
-      }
-
-        function renderCombinedExtras(data) {
-
-          const chandramanamDiv = document.getElementById("thithiExtras");
-          const sowramanamDiv  = document.getElementById("sowramanamExtras");
-
-          if (!chandramanamDiv || !sowramanamDiv) return;
-
-          // Sowramaanam block
-            sowraDiv.innerHTML = `
-              <strong>Sowramaana sankalpam</strong><br><br>
-              Samvatsaram: ${data.sowramanam.varsham?.name ?? "—"}<br>
-              Ayanam: ${data.sowramanam.ayanam?.name ?? "—"}<br>
-              Ruthu: ${data.sowramanam.ruthu?.name ?? "—"}<br>
-              Masam: ${data.sowramanam.masam?.name ?? "—"}<br>
-              Paksham: ${data.thithi.paksham}<br>
-              Thithu: See thithi details below<br> 
-              Vaasaram: ${data.thithi.weekdayTrad}<br>
-            `;
-          // Chaandramaanam block
-            thithiDiv.innerHTML = `
-              <strong>Chaandramaana sankalpam</strong><br><br>
-              Samvatsaram: ${data.thithi.varsham}<br>
-              Ayanam: ${data.sowramanam.ayanam?.name ?? "—"}<br>
-              Ruthu: ${data.thithi.ruthu}<br>
-              Masam: ${data.thithi.masam}<br>
-              Paksham: ${data.thithi.paksham}<br>
-              Thithu: See thithi details below<br> 
-              Vaasaram: ${data.thithi.weekdayTrad}<br>
-            `;
-
-        }
+      
       // -------------------------------
       // Main block rendering (unchanged)
       // -------------------------------
@@ -673,6 +631,49 @@ async function loadElementData(def_element, nowUTC) {
  * HELPER functions
  ***********************/
 
+// -------------------------------
+      // This ensures rendering happens only when BOTH are loaded
+      // -------------------------------
+      function tryRenderCombinedExtras() {
+        if (!GLOBAL_EXTRAS.thithi || !GLOBAL_EXTRAS.sowramanam) return;
+
+          renderCombinedExtras({
+            thithi: GLOBAL_EXTRAS.thithi,
+            sowramanam: GLOBAL_EXTRAS.sowramanam
+          });
+      }
+
+        function renderCombinedExtras(data) {
+
+          const chandramanamDiv = document.getElementById("thithiExtras");
+          const sowramanamDiv  = document.getElementById("sowramanamExtras");
+
+          if (!chandramanamDiv || !sowramanamDiv) return;
+
+          // Sowramaanam block
+            sowramanamDiv.innerHTML = `
+              <strong>Sowramaana sankalpam</strong><br><br>
+              Samvatsaram: ${data.sowramanam.varsham?.name ?? "—"}<br>
+              Ayanam: ${data.sowramanam.ayanam?.name ?? "—"}<br>
+              Ruthu: ${data.sowramanam.ruthu?.name ?? "—"}<br>
+              Masam: ${data.sowramanam.masam?.name ?? "—"}<br>
+              Paksham: ${data.thithi.paksham}<br>
+              Thithu: See thithi details below<br> 
+              Vaasaram: ${data.thithi.weekdayTrad}<br>
+            `;
+          // Chaandramaanam block
+            chandramanamDiv.innerHTML = `
+              <strong>Chaandramaana sankalpam</strong><br><br>
+              Samvatsaram: ${data.thithi.varsham}<br>
+              Ayanam: ${data.sowramanam.ayanam?.name ?? "—"}<br>
+              Ruthu: ${data.thithi.ruthu}<br>
+              Masam: ${data.thithi.masam}<br>
+              Paksham: ${data.thithi.paksham}<br>
+              Thithu: See thithi details below<br> 
+              Vaasaram: ${data.thithi.weekdayTrad}<br>
+            `;
+
+        }
 function renderThithiExtras(data) {
   const container = document.getElementById("thithiExtras");
   if (!container) return;
